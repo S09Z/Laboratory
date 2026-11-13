@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "thaijp-accent"
 version = "0.1.0"
@@ -6,7 +10,7 @@ dependencies = ["pythainlp>=5.0", "python-crfsuite", "pyyaml", "jiwer", "numpy",
 
 [project.optional-dependencies]
 g2p = ["transformers", "torch", "sentencepiece"]
-dev = ["pytest", "jupytext", "nbformat"]
+dev = ["pytest", "jupytext", "nbformat", "librosa", "ruff"]
 
 [tool.setuptools]
 packages = ["thaijp_accent", "colab"]
@@ -17,3 +21,21 @@ thaijp_accent = ["*.yaml", "*.tsv"]
 [tool.pytest.ini_options]
 markers = ["network: needs internet / HF models"]
 testpaths = ["tests"]
+
+[dependency-groups]
+dev = ["pytest", "jupytext", "nbformat", "librosa", "ruff"]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501", "B905"]  # existing code is dense; zip() strictness left as-is
+
+[tool.ruff.lint.per-file-ignores]
+"notebooks_src/*" = ["E402", "E401", "E702"]  # jupytext percent scripts, cell-ordered imports
