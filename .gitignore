@@ -1,8 +1,37 @@
-.superpowers/
+# Python
 __pycache__/
-*.pyc
-.pytest_cache/
-.DS_Store
-.venv/
-.ipynb_checkpoints/
+*.py[cod]
 *.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.superpowers/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Generated audio / model weights (live on Google Drive, not in git)
+*.wav
+*.mp3
+*.flac
+*.pth
+*.pt
+*.safetensors
+*.onnx
+*.ckpt
+outputs/
+outputs_mac/
+
