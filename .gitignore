@@ -62,3 +62,5 @@ outputs_mac/
 
 
 .serena
+# local SBV2 clone + venv (mac/setup_mac.sh)
+thaijp_lab/

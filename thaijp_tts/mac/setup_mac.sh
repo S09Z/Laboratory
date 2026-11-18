@@ -8,7 +8,7 @@
 set -euo pipefail
 
 PROJ="$(cd "$(dirname "$0")/.." && pwd)"
-LAB_LOCAL="${THAIJP_HOME:-$HOME/thaijp_lab}"
+LAB_LOCAL="${THAIJP_HOME:-$(dirname "$PROJ")/thaijp_lab}"   # default: <workspace>/thaijp_lab (อยู่ข้าง thaijp_tts)
 SBV2="$LAB_LOCAL/Style-Bert-VITS2"
 VENV="$LAB_LOCAL/.venv"
 SBV2_TAG="2.7.0"

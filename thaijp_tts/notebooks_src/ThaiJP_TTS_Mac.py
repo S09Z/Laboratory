@@ -49,7 +49,7 @@ os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")   # op ที่ MPS �
 
 PROJ = Path.cwd().resolve().parent if Path.cwd().name == "notebooks" else Path.cwd().resolve()
 assert (PROJ / "thaijp_accent").is_dir(), f"เปิด notebook จากโฟลเดอร์ thaijp_tts/notebooks (ตอนนี้อยู่ที่ {Path.cwd()})"
-SBV2 = Path(os.environ.get("THAIJP_HOME", Path.home() / "thaijp_lab")) / "Style-Bert-VITS2"
+SBV2 = Path(os.environ.get("THAIJP_HOME", PROJ.parent / "thaijp_lab")) / "Style-Bert-VITS2"
 assert SBV2.is_dir(), f"ไม่พบ {SBV2} — รัน: bash mac/setup_mac.sh"
 for p in (str(PROJ), str(SBV2)):
     if p not in sys.path:

@@ -24,10 +24,10 @@ Mac ใช้ได้กับ**ทุกขั้นยกเว้นกา�
 1. ติดตั้ง **Google Drive for desktop** แล้วคลิกขวาที่โฟลเดอร์ `Laboratory` → *Available offline*
 2. แตก `Laboratory/thaijp_tts.zip` ไปไว้ที่ไหนก็ได้ เช่น `~/thaijp_tts`
 3. ใน Terminal: `bash ~/thaijp_tts/mac/setup_mac.sh`
-   - สร้าง Python 3.11 + Style-Bert-VITS2 ไว้ที่ `~/thaijp_lab`
+   - สร้าง Python 3.11 + Style-Bert-VITS2 ไว้ที่ `thaijp_lab/` (โฟลเดอร์ข้าง `thaijp_tts/` ใน workspace; เปลี่ยนได้ด้วย `THAIJP_HOME`)
    - ใช้เวลาครั้งแรก 10–15 นาที
    - ต้องมี Xcode Command Line Tools และ Homebrew
-4. `source ~/thaijp_lab/.venv/bin/activate && jupyter lab ~/thaijp_tts/notebooks/ThaiJP_TTS_Mac.ipynb`
+4. `source <workspace>/thaijp_lab/.venv/bin/activate && jupyter lab thaijp_tts/notebooks/ThaiJP_TTS_Mac.ipynb`
    แล้วเลือก kernel **thaijp (Mac M3)** (ใช้กับ VS Code ได้เหมือนกัน)
 
 โมเดลที่เทรนใน Colab (`Laboratory/sbv2/model_assets/<TRAIN_NAME>`) จะ sync มาที่ Mac ให้อัตโนมัติ
