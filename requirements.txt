@@ -1,0 +1,28 @@
+# Direct dependencies of thaijp_tts (source of truth: pyproject.toml; exact pins: uv.lock)
+# Install: uv pip install -r requirements.txt   (or: uv sync --extra g2p)
+
+# --- core (thaijp_accent) ---
+pythainlp>=5.0
+python-crfsuite
+pyyaml
+jiwer
+numpy
+soundfile
+
+# --- G2P (umt5-thai-g2p) and eval (Whisper ASR, UTMOS) ---
+transformers
+torch
+sentencepiece
+librosa
+
+# --- training env on Colab / CUDA (colab/preflight.py REQUIRED_MODULES) ---
+setuptools<81        # pkg_resources for pyopenjtalk / librosa
+soxr                 # transformers 5 WavLM (discriminator)
+tensorboard          # train_ms_jp_extra.py
+ml_dtypes>=0.5.1     # onnx/tensorflow need float4 types
+
+# --- dev ---
+pytest
+jupytext
+nbformat
+ruff
