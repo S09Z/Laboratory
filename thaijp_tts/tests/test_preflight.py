@@ -16,7 +16,7 @@ def test_run_checks_collects_failures_without_stopping():
 def test_check_free_space_fails_below_min(monkeypatch):
     monkeypatch.setattr(pf.shutil, "disk_usage", lambda p: (100 * 2**30, 97 * 2**30, 3 * 2**30))
     import pytest
-    with pytest.raises(RuntimeError, match=r"3\.0 GB"):
+    with pytest.raises(RuntimeError, match="3.0 GB"):
         pf.check_free_space("/x", min_gb=6)
 
 

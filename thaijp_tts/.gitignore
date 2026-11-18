@@ -1,5 +1,62 @@
-.superpowers/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling caches
 .pytest_cache/
-.serena
+.ruff_cache/
+.ipynb_checkpoints/
+.superpowers/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Archives / compressed files
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.tbz2
+*.tar.xz
+*.txz
+*.gz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Generated audio / model weights (live on Google Drive, not in git)
+*.wav
+*.wav.npy
+*.mp3
+*.flac
+*.ogg
+*.oga
+*.opus
+*.m4a
+*.aac
+*.aif
+*.aiff
+*.wma
+*.pth
+*.pt
+*.safetensors
+*.onnx
+*.ckpt
+outputs/
+outputs_mac/
+

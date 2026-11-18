@@ -42,10 +42,9 @@ def synthesize(model, inp: Sbv2Input, bert_mode: Literal["kana", "zeros", "mean"
                style: str = "Neutral", style_weight: float = 1.0, length: float = 1.0,
                intonation_scale: float = 1.0, mean_bert=None, infer_module=None, zeros=None):
     """Return (sampling_rate, int16 audio)."""
-    kwargs = {"text": inp.kana, "given_phone": list(inp.phones),
-              "given_tone": list(inp.tones), "line_split": False, "style": style,
-              "style_weight": style_weight, "length": length,
-              "intonation_scale": intonation_scale}
+    kwargs = dict(text=inp.kana, given_phone=list(inp.phones), given_tone=list(inp.tones),
+                  line_split=False, style=style, style_weight=style_weight, length=length,
+                  intonation_scale=intonation_scale)
     if infer_module is None:
         from style_bert_vits2.models import infer as infer_module  # type: ignore
     if bert_mode != "kana" and zeros is None:

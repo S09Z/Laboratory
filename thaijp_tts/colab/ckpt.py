@@ -54,7 +54,7 @@ def find_resumable_checkpoint(models_dir: Path, loader: Callable | None = None) 
                 loader(d / f"{p}_{step}.pth")
             chosen = step
             break
-        except Exception:
+        except Exception:  # noqa: BLE001
             continue
     _move_newer_aside(d, chosen)
     return chosen

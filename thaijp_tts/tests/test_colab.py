@@ -2,6 +2,7 @@ import signal
 from pathlib import Path
 
 import pytest
+import yaml
 
 from colab import ckpt, runtime, train_runner
 
@@ -121,8 +122,6 @@ def test_run_training_finished(tmp_path):
 
 
 # ---- final-review fixes ----
-import yaml
-
 
 def test_write_sbv2_config_yml_sets_model_and_keep(tmp_path):
     (tmp_path / "default_config.yml").write_text(
@@ -167,7 +166,8 @@ def test_prune_safetensors_keeps_latest(tmp_path):
 
 def test_budget_stop_waits_for_inference_safetensors(tmp_path):
     models, assets = tmp_path / "models", tmp_path / "assets"
-    models.mkdir(); assets.mkdir()
+    models.mkdir()
+    assets.mkdir()
     make_ckpt(models, 500)
     proc = FakeProc()
     t = {"now": 0.0}

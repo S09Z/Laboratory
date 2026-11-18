@@ -37,7 +37,7 @@ def run_checks(checks: list[tuple[str, Callable[[], str]]]) -> list[CheckResult]
     for name, fn in checks:
         try:
             out.append(CheckResult(name, True, fn() or "ok"))
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — report every failure, keep going
             out.append(CheckResult(name, False, f"{type(e).__name__}: {e}"[:400]))
     return out
 
@@ -62,7 +62,7 @@ def check_modules() -> str:
     for mod, why in REQUIRED_MODULES.items():
         try:
             importlib.import_module(mod)
-        except Exception:
+        except Exception:  # noqa: BLE001
             missing.append(f"{mod} ({why})")
     if missing:
         raise RuntimeError("missing: " + ", ".join(missing))
@@ -70,7 +70,7 @@ def check_modules() -> str:
 
 
 def check_free_space(path: str, min_gb: float = 6.0) -> str:
-    _total, _used, free = shutil.disk_usage(path)
+    total, used, free = shutil.disk_usage(path)
     free_gb = free / 2**30
     if free_gb < min_gb:
         raise RuntimeError(f"only {free_gb:.1f} GB free on Drive; need ≥ {min_gb:.0f} GB for checkpoints")

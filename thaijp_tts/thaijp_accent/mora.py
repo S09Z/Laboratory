@@ -92,7 +92,7 @@ def syllables_to_morae(sylls: list[Syllable], level: AccentLevel,
             prev_pitch = 0
         phones = _syllable_phones(s)
         pitches = _contour(s.tone, len(phones), prev_pitch, table)
-        for ph, pi in zip(phones, pitches, strict=False):
+        for ph, pi in zip(phones, pitches):
             out.append(Mora(ph, pi, s.word_idx, i))
         prev_pitch = pitches[-1]
     return out

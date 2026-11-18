@@ -37,7 +37,7 @@ def test_every_code_cell_has_markdown_before(tmp_path):
 def test_notebook_python_compiles(tmp_path):
     for c in build(tmp_path).cells:
         if c.cell_type == "code":
-            src = "\n".join(l for l in c.source.splitlines() if not l.lstrip().startswith(("%", "!")))
+            src = "\n".join(ln for ln in c.source.splitlines() if not ln.lstrip().startswith(("%", "!")))
             compile(src, "cell", "exec")
 
 

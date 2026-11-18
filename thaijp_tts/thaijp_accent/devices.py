@@ -19,7 +19,7 @@ def pick_device(available: dict[str, bool] | None = None, probe: Callable[[str],
             if probe is not None:
                 probe("mps")
             return "mps"
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"MPS ใช้ไม่ได้กับโมเดลนี้ ({type(e).__name__}: {e}) → ใช้ CPU")
     return "cpu"
 

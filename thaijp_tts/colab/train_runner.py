@@ -73,7 +73,7 @@ def _watch(proc, models_dir, assets_dir, budget_s, poll_s, clock, sleep, keep, g
             if on_prune is not None:
                 try:
                     on_prune()
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 — cleanup must never stop training
                     print("on_prune failed:", e)
         if stop_after is None and clock() - start >= budget_s:
             stop_after = newest

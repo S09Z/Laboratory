@@ -108,7 +108,7 @@ def _orthographic_syllables(word: str) -> int | None:
     try:
         from pythainlp.tokenize import syllable_tokenize
         return len(syllable_tokenize(word))
-    except Exception:
+    except Exception:  # noqa: BLE001 — optional helper (needs python-crfsuite)
         return None
 
 
@@ -196,9 +196,9 @@ def _parse_syllable(raw: str, word_idx: int) -> Syllable:
     rest = body[len(onset):]
     onset = {"ʔ": "", "c": "tɕ", "y": "j"}.get(onset, onset)
     cluster = None
-    if (onset in CLUSTER_BASES and rest[:1] in CLUSTER_SECOND and len(rest) > 1
-            and any(rest[1:].startswith(v[0]) for v in VOWELS)):
-        cluster, rest = rest[0], rest[1:]
+    if onset in CLUSTER_BASES and rest[:1] in CLUSTER_SECOND and len(rest) > 1:
+        if any(rest[1:].startswith(v[0]) for v in VOWELS):
+            cluster, rest = rest[0], rest[1:]
     vowel = next((v for v in VOWELS if rest.startswith(v[0])), None)
     if vowel is None:
         raise ValueError(f"no vowel in syllable {raw!r}")
@@ -236,7 +236,7 @@ def thai_to_syllables(text: str, g2p: ThaiG2P, lexicon: dict[str, str] | None = 
         try:
             ipa = lexicon[word] if word in lexicon else g2p.word_to_ipa(word)
             sylls = parse_ipa(ipa, word_idx)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — any failure skips just this word
             warnings.append(f"skipped word {word!r}: {e}")
             continue
         out.extend(sylls)
