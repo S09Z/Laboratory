@@ -34,7 +34,6 @@ def run_training(cmd: list[str], models_dir: Path, budget_s: float, poll_s: floa
         proc = popen(cmd, stdout=logf, stderr=subprocess.STDOUT)
     start = clock()
     last = (complete_steps(models_dir) or [0])[-1]
-    stop_after: int | None = None
     try:
         status = _watch(proc, models_dir, assets_dir, budget_s, poll_s, clock, sleep, keep,
                         grace_s, on_prune, start, last)

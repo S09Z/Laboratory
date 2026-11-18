@@ -35,7 +35,7 @@ def test_mac_notebook_no_undefined_names(tmp_path):
     f = tmp_path / "all.py"
     f.write_text(code, encoding="utf-8")
     r = subprocess.run([sys.executable, "-m", "pyflakes", str(f)], capture_output=True, text=True)
-    bad = [l for l in r.stdout.splitlines() if "undefined name" in l]
+    bad = [ln for ln in r.stdout.splitlines() if "undefined name" in ln]
     assert not bad, bad
 
 

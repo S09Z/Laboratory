@@ -182,7 +182,7 @@ print(GPU, "→ batch_size", BATCH_SIZE)
 
 # %%
 try:
-    import pycrfsuite  # pythainlp ใช้นับพยางค์ เพื่อตัดพยางค์ที่โมเดลพูดซ้ำ
+    import pycrfsuite  # noqa: F401  # pythainlp ใช้นับพยางค์ เพื่อตัดพยางค์ที่โมเดลพูดซ้ำ
 except ImportError:
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "python-crfsuite"], check=True)
 from thaijp_accent.g2p import UmT5G2P, parse_ipa
@@ -464,11 +464,14 @@ _on_prune = None
 if PURGE_TRASHED_CHECKPOINTS:
     # ไฟล์ที่ลบผ่าน /content/drive จะไปอยู่ถังขยะและยังกินโควตา — ลบเฉพาะ checkpoint ของ run นี้ออกถาวร
     _svc = drive_service()   # จะมีหน้าต่างขอสิทธิ์ Google Drive ครั้งแรก
-    _rel = lambda p: list(Path(p).relative_to("/content/drive/MyDrive").parts)
+    def _rel(p):
+        return list(Path(p).relative_to("/content/drive/MyDrive").parts)
+
     _ids = {folder_id(_svc, _rel(MODELS))}
     (ASSETS_ROOT / TRAIN_NAME).mkdir(parents=True, exist_ok=True)
     _ids.add(folder_id(_svc, _rel(ASSETS_ROOT / TRAIN_NAME)))
-    _on_prune = lambda: print("ลบ checkpoint เก่าในถังขยะถาวร:", purge_trashed_checkpoints(_svc, _ids), "ไฟล์")
+    def _on_prune():
+        print("ลบ checkpoint เก่าในถังขยะถาวร:", purge_trashed_checkpoints(_svc, _ids), "ไฟล์")
 
 cfg_path = TDS / "config.json"
 bs = BATCH_SIZE
