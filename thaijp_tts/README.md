@@ -63,3 +63,9 @@ notebook จะลองใช้ GPU ของ Mac (MPS) ก่อน ถ้า
 - **M0:** フリー素材キャラクター「つくよみちゃん」(© Rei Yumesaki)
 - **ITA corpus:** https://github.com/mmorise/ita-corpus
 - **G2P:** `B-K/umt5-thai-g2p` (Apache-2.0)
+
+## Kaggle (ทางเลือกเมื่อโควตา Colab หมด)
+
+`make kaggle` สร้าง `notebooks/ThaiJP_TTS_Kaggle.ipynb` จาก source ของ Colab (`scripts/make_kaggle.py`) —
+อัปโหลด `thaijp_tts.zip` เป็น Kaggle Dataset, เปิด GPU T4 x2 + Internet แล้ว Run All
+(ไฟล์ใน `/kaggle/working` หายเมื่อ session จบถ้าไม่ Save Version)
