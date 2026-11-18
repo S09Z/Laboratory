@@ -29,7 +29,7 @@
 # %%
 TRAIN_NAME = "amitaro_runrun"   # ชื่อเดียวกับ RUN_ID (หรือ RUN_ID + "_E2") ใน notebook Colab
 BERT_MODE = "kana"              # E1 → "kana" · E2 → "zeros"
-LAB_OVERRIDE = ""               # เว้นว่าง = หา MyDrive/Laboratory อัตโนมัติ · หรือใส่ path เอง
+LAB_OVERRIDE = ""               # เว้นว่าง = ใช้ workspace (โฟลเดอร์แม่ของ thaijp_tts ถ้ามี sbv2/) · ไม่งั้นหา MyDrive/Laboratory · หรือใส่ path เอง
 RUN_EVAL = False                # True = รันส่วน 5
 
 # %% [markdown]
@@ -59,7 +59,8 @@ for _m in [m for m in sys.modules if m.startswith("thaijp_accent")]:   # ใช�
 
 from thaijp_accent.devices import find_drive_lab, pick_device
 
-LAB = Path(LAB_OVERRIDE) if LAB_OVERRIDE else find_drive_lab()
+_ws = PROJ.parent if (PROJ.parent / "sbv2").is_dir() else None
+LAB = Path(LAB_OVERRIDE).expanduser() if LAB_OVERRIDE else (_ws or find_drive_lab())
 assert LAB and LAB.is_dir(), "หาโฟลเดอร์ Laboratory ใน Google Drive for desktop ไม่เจอ — ใส่ LAB_OVERRIDE"
 ASSETS_ROOT = LAB / "sbv2" / "model_assets"
 OUT = LAB / "outputs_mac"
