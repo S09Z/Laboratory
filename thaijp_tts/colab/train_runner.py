@@ -17,26 +17,36 @@ from .ckpt import complete_steps, prune_checkpoints, prune_safetensors, safetens
 OOM_MARKERS = ("CUDA out of memory", "OutOfMemoryError")
 
 
-_EPOCH_RE = re.compile(r"Train Epoch: (\d+) \[(\d+)%\]")
-_LOSS_RE = re.compile(r"\[((?:-?[\d.]+(?:e-?\d+)?,\s*){3,}-?[\d.]+(?:e-?\d+)?)\]\s*$", re.M)
+_TQDM_RE = re.compile(
+    r"Epoch (\d+)\((\d+)%\)/(\d+):\s+\d+%\|[^|]*\|\s*(\d+)/(\d+) "
+    r"\[([\d:]+)<([\d:?]+),\s*([\d.]+)\s*(s/it|it/s)\]")
+LOSS_TAGS = ("loss/g/total", "loss/d/total", "loss/g/mel", "loss/g/fm", "loss/g/dur", "loss/g/kl")
 
 
 def parse_progress(text: str) -> dict | None:
-    """Latest {step, epoch, pct, lr, losses} from SBV2 log text, or None.
-
-    SBV2 logs ``Train Epoch: N [P%]`` then ``[loss..., global_step, lr]``.
-    """
-    losses = None
-    for m in _LOSS_RE.finditer(text):
-        nums = [float(x) for x in m.group(1).split(",")]
-        if len(nums) >= 4 and nums[-2] == int(nums[-2]):
-            losses = nums
-    if losses is None:
+    """Latest progress from SBV2's tqdm bar: ``Epoch 17(44%)/100: 17%|#6| 1846/10868 [32:31<3:32:23, 1.41s/it]``."""
+    ms = list(_TQDM_RE.finditer(text))
+    if not ms:
         return None
-    eps = list(_EPOCH_RE.finditer(text))
-    ep = eps[-1] if eps else None
-    return {"step": int(losses[-2]), "epoch": int(ep.group(1)) if ep else None,
-            "pct": int(ep.group(2)) if ep else None, "lr": losses[-1], "losses": losses[:-2]}
+    m = ms[-1]
+    rate = float(m.group(8))
+    sec = rate if m.group(9) == "s/it" else (1 / rate if rate else 0.0)
+    return {"step": int(m.group(4)), "total": int(m.group(5)), "epoch": int(m.group(1)),
+            "epochs": int(m.group(3)), "elapsed": m.group(6), "eta": m.group(7),
+            "sec_per_it": round(sec, 2)}
+
+
+def read_losses(models_dir: Path) -> dict[str, float]:
+    """Latest scalar per LOSS_TAGS from the trainer's TensorBoard events; {} if unavailable."""
+    try:
+        from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
+
+        ea = EventAccumulator(str(models_dir), size_guidance={"scalars": 0})
+        ea.Reload()
+        tags = set(ea.Tags().get("scalars", []))
+        return {t.removeprefix("loss/"): float(ea.Scalars(t)[-1].value) for t in LOSS_TAGS if t in tags}
+    except Exception:  # noqa: BLE001 — progress display must never stop training
+        return {}
 
 
 def _read_tail(log_path: Path, offset: int, limit: int = 20000) -> str:
@@ -49,15 +59,16 @@ def _read_tail(log_path: Path, offset: int, limit: int = 20000) -> str:
         return ""
 
 
-def _report(log_path: Path, offset: int, elapsed: float) -> None:
+def _report(log_path: Path, offset: int, elapsed: float, models_dir: Path) -> None:
     p = parse_progress(_read_tail(log_path, offset))
     t = f"{int(elapsed // 3600)}h{int(elapsed % 3600 // 60):02d}m"
     if p is None:
         print(f"[{t}] ยังไม่มี step ใน train.log (กำลังโหลด/เริ่มเทรน)", flush=True)
         return
-    loss = ", ".join(f"{x:.2f}" for x in p["losses"])
-    ep = f" · epoch {p['epoch']} {p['pct']}%" if p["epoch"] is not None else ""
-    print(f"[{t}] step {p['step']}{ep} · loss [{loss}] · lr {p['lr']:.2e}", flush=True)
+    pct = 100 * p["step"] / p["total"] if p["total"] else 0
+    loss = " ".join(f"{k} {v:.2f}" for k, v in read_losses(models_dir).items())
+    print(f"[{t}] step {p['step']}/{p['total']} ({pct:.0f}%) · epoch {p['epoch']}/{p['epochs']} · "
+          f"{p['sec_per_it']} s/it · ETA {p['eta']}" + (f" · {loss}" if loss else ""), flush=True)
 
 
 def detect_oom(log_text: str) -> bool:
@@ -82,7 +93,7 @@ def run_training(cmd: list[str], models_dir: Path, budget_s: float, poll_s: floa
     try:
         status = _watch(proc, models_dir, assets_dir, budget_s, poll_s, clock, sleep, keep,
                         grace_s, on_prune, start, last,
-                        (log_path, offset, progress_s))
+                        (log_path, offset, progress_s, models_dir))
     except BaseException:
         # Stop button / error in the notebook: never leave the trainer running in the background
         if proc.poll() is None:
@@ -111,7 +122,7 @@ def _watch(proc, models_dir, assets_dir, budget_s, poll_s, clock, sleep, keep, g
     while proc.poll() is None:
         sleep(poll_s)
         if prog and clock() >= next_report:
-            _report(prog[0], prog[1], clock() - start)
+            _report(prog[0], prog[1], clock() - start, prog[3])
             next_report = clock() + prog[2]
         steps = complete_steps(models_dir)
         newest = steps[-1] if steps else 0

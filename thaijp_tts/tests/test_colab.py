@@ -254,18 +254,23 @@ def test_on_prune_callback_called_after_pruning(tmp_path):
 
 # ---- progress reporting ----
 
-SBV2_LOG = (
-    "11-18 09:30:01 | INFO | train_ms_jp_extra.py:600 | Train Epoch: 3 [45%]\n"
-    "11-18 09:30:01 | INFO | train_ms_jp_extra.py:601 | [2.1, 3.4, 1.2, 18.5, 0.9, 1.1, 1200, 0.0002]\n"
-    "11-18 09:31:11 | INFO | train_ms_jp_extra.py:600 | Train Epoch: 3 [90%]\n"
-    "11-18 09:31:11 | INFO | train_ms_jp_extra.py:601 | [2.0, 3.5, 1.1, 17.9, 0.8, 1.0, 1250, 0.0002]\n"
+# real SBV2 output: tqdm bar rewritten with \r, global step / total steps
+TQDM_LOG = (
+    "Epoch 17(44%)/100:  17%|#6        | 1844/10868 [32:30<3:33:43,  1.42s/it]\r"
+    "Epoch 17(45%)/100:  17%|#6        | 1846/10868 [32:31<3:32:23,  1.41s/it]\r"
+    "[rank0]: Traceback (most recent call last):\n"
 )
 
 
-def test_parse_progress_takes_latest_step_and_losses():
-    p = train_runner.parse_progress(SBV2_LOG)
-    assert p == {"step": 1250, "epoch": 3, "pct": 90, "lr": 0.0002,
-                 "losses": [2.0, 3.5, 1.1, 17.9, 0.8, 1.0]}
+def test_parse_progress_reads_latest_tqdm_line():
+    p = train_runner.parse_progress("Bucket info: [308, 64]\n" + TQDM_LOG)
+    assert p == {"step": 1846, "total": 10868, "epoch": 17, "epochs": 100,
+                 "elapsed": "32:31", "eta": "3:32:23", "sec_per_it": 1.41}
+
+
+def test_parse_progress_handles_its_unit():
+    p = train_runner.parse_progress("Epoch 1(5%)/100:   0%|          | 12/10868 [00:10<2:30:00,  1.20it/s]")
+    assert p["sec_per_it"] == pytest.approx(1 / 1.2, abs=0.01)
 
 
 def test_parse_progress_none_without_matches():
@@ -273,13 +278,15 @@ def test_parse_progress_none_without_matches():
     assert train_runner.parse_progress("") is None
 
 
-def test_run_training_prints_progress(tmp_path, capsys):
+def test_run_training_prints_progress_and_losses(tmp_path, capsys, monkeypatch):
+    monkeypatch.setattr(train_runner, "read_losses",
+                        lambda d: {"g/total": 37.4, "d/total": 2.2, "g/mel": 22.18})
     log = tmp_path / "log.txt"
     proc = FakeProc()
     t = {"now": 0.0}
 
-    def popen(*a, **k):  # trainer writes to the log after start (old content is skipped)
-        log.write_text(SBV2_LOG, encoding="utf-8")
+    def popen(*a, **k):  # trainer writes after start (old log content is skipped)
+        log.write_text(TQDM_LOG, encoding="utf-8")
         return proc
 
     def sleep(s):
@@ -291,11 +298,14 @@ def test_run_training_prints_progress(tmp_path, capsys):
                               popen=popen, clock=lambda: t["now"], sleep=sleep,
                               log_path=log, loader=loader)
     out = capsys.readouterr().out
-    assert "step 1250" in out and "loss" in out
-    assert out.count("step 1250") >= 2  # reported repeatedly, not once
+    assert "step 1846/10868" in out and "17%" in out
+    assert "ETA 3:32:23" in out and "1.41 s/it" in out
+    assert "g/total 37.40" in out and "d/total 2.20" in out
+    assert out.count("step 1846") >= 2  # reported repeatedly, not once
 
 
-def test_run_training_reports_waiting_when_no_progress_yet(tmp_path, capsys):
+def test_run_training_reports_waiting_when_no_progress_yet(tmp_path, capsys, monkeypatch):
+    monkeypatch.setattr(train_runner, "read_losses", lambda d: {})
     proc = FakeProc()
     t = {"now": 0.0}
 
@@ -308,3 +318,7 @@ def test_run_training_reports_waiting_when_no_progress_yet(tmp_path, capsys):
                               popen=lambda *a, **k: proc, clock=lambda: t["now"], sleep=sleep,
                               log_path=tmp_path / "none.txt", loader=loader)
     assert "ยังไม่มี step" in capsys.readouterr().out
+
+
+def test_read_losses_is_safe_without_events(tmp_path):
+    assert train_runner.read_losses(tmp_path) == {}
