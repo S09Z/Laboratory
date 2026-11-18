@@ -25,6 +25,7 @@ venv/
 
 # Generated audio / model weights (live on Google Drive, not in git)
 *.wav
+*.wav.npy
 *.mp3
 *.flac
 *.ogg
