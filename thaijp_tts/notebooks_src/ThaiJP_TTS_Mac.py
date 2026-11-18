@@ -45,6 +45,8 @@ import sys
 import time
 from pathlib import Path
 
+assert "thaijp_lab" in sys.executable or os.environ.get("THAIJP_HOME", "") in sys.executable, (
+    f"kernel ผิดตัว: {sys.executable}\nเลือก kernel \"thaijp (Mac M3)\" (thaijp_lab/.venv) แล้ว Restart ก่อน")
 os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")   # op ที่ MPS ยังไม่รองรับ → ไปทำบน CPU แทนการ error
 
 PROJ = Path.cwd().resolve().parent if Path.cwd().name == "notebooks" else Path.cwd().resolve()
