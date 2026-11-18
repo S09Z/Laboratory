@@ -1,0 +1,2 @@
+音声: あみたろの声素材工房 (https://amitaro.net/) の ITA コーパス読み上げ音声を使用。
+ITA corpus: https://github.com/mmorise/ita-corpus

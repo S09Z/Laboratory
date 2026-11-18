@@ -1,0 +1,105 @@
+﻿Amitaro's ITA Corpus Voice Recording — Runrun  Ver.1.0  Updated: 2023-09-08
+
+About this corpus: https://amitaro.net/voice/corpus-list/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Contents
+
+  1. About this corpus
+  2. About this style
+  3. All available styles
+  4. Recording environment
+  5. Update history
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. About this corpus
+
+This collection contains voice recordings of all 424 sentences from the
+ITA Corpus, a publicly available Japanese text corpus released in the
+public domain, read aloud by Amitaro.
+
+Format: WAV, PCM 48,000 Hz / 16-bit / Mono
+        and PCM 44,100 Hz / 16-bit / Mono (both included)
+Use the 44,100 Hz version for MYCOEIROINK training or combining with
+dialogue voice materials.
+
+  ITA Corpus sentence list: https://github.com/mmorise/ita-corpus
+
+Recorded in a home recording studio. The most stable take per sentence
+was selected and processed in RX10 Advanced: batch hum removal, then
+manual lip and pop noise removal (taking care not to damage consonants).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2. About this style
+
+The "Normal" style is precisely and clearly articulated, optimized for
+accessibility TTS use, which tends to sound robotic when used for
+character voices.
+
+"Runrun" retains natural human imperfections — slightly softened
+consonants, natural pitch variation — making it a better fit for
+character dialogue. The delivery is upbeat, like sharing exciting news
+with a friend.
+
+MANA Corpus and AMITARO Corpus voice recordings are also available.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3. All available styles
+
+"Amitaro's ITA Corpus Voice Recording" is available in the following styles.
+
+  [All 424 ITA Corpus sentences]
+  - Normal            … Precise, clearly articulated — optimized for TTS
+  - Runrun (this zip) … Upbeat, bouncy delivery — like sharing good news
+  - Yofukashi         … Natural, calm speech — late-night radio style
+  - Punsuka           … Animated "trying-to-be-angry" character voice
+
+  [ITA Corpus emotion 100 sentences only]
+  - Sasayaki A        … Hushed whisper — heavy on breathiness
+  - Sasayaki B        … Whisper with more of Amitaro's natural voice character
+
+  Full list: https://amitaro.net/voice/corpus-list/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4. Recording environment
+
+  Room                 Home recording studio
+  Microphone           audio-technica AT4040 (condenser)
+  Audio interface      Steinberg UR242
+  Pop filter           STEDMAN PROSCREEN XL (metal)
+  Headphones           audio-technica ATH-SX1a
+  Reflection filter    CLASSIC PRO CAR900
+
+The studio is a custom-built room (~2.4 tatami / ~3.8 m²) with
+cellulose fiber insulation inside all walls, acoustic wall panels
+covered with thick curtains, carpet flooring, and sound-deadening
+ceiling panels.
+(Measurement was taken before the curtain modification.)
+
+Measurement data:
+
+  A-weighted noise level:  18.5 dB  (Rion NL-52EX)
+  Reverberation time T60:  220 ms
+
+  T60 estimated by impulse integration method [1].
+  Impulse response measured by TSP method [2].
+  Sampling rate: 48 kHz, 24-bit.
+
+  Measured by: Masanori Morise
+
+Details: https://amitaro.net/about/aboutrec/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5. Update history
+
+  2023-09-08  Ver.1.0  Initial release
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Amitaro's Voice Material Studio  https://amitaro.net/

@@ -1,0 +1,92 @@
+2026-11-13 06:49:02.570 +00:00 | INFO     | gradio_tabs.train:initialize:72 - Step 1: start initialization...
+model_name: amitaro_v1, batch_size: 4, epochs: 100, save_every_steps: 500, freeze_ZH_bert: False, freeze_JP_bert: False, freeze_EN_bert: False, freeze_style: False, freeze_decoder: False, use_jp_extra: True
+2026-11-13 06:49:06.180 +00:00 | SUCCESS  | gradio_tabs.train:initialize:132 - Step 1: initialization finished.
+2026-11-13 06:49:06.183 +00:00 | INFO     | gradio_tabs.train:resample:137 - Step 2: start resampling...
+2026-11-13 06:49:06.183 +00:00 | INFO     | style_bert_vits2.utils.subprocess:run_script_with_log:23 - Running: resample.py -i /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/raw -o /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/wavs --num_processes 2 --sr 44100 --trim
+2026-11-13 06:51:32.979 +00:00 | SUCCESS  | style_bert_vits2.utils.subprocess:run_script_with_log:38 - Success: resample.py -i /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/raw -o /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/wavs --num_processes 2 --sr 44100 --trim
+2026-11-13 06:51:32.980 +00:00 | SUCCESS  | gradio_tabs.train:resample:163 - Step 2: resampling finished.
+2026-11-13 06:51:32.981 +00:00 | INFO     | gradio_tabs.train:preprocess_text:170 - Step 3: start preprocessing text...
+2026-11-13 06:51:32.982 +00:00 | INFO     | style_bert_vits2.utils.subprocess:run_script_with_log:23 - Running: preprocess_text.py --config-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/config.json --transcription-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/esd.list --train-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/train.list --val-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/val.list --val-per-lang 4 --yomi_error skip --correct_path --use_jp_extra
+2026-11-13 06:51:53.086 +00:00 | WARNING  | style_bert_vits2.utils.subprocess:run_script_with_log:36 - Warning: preprocess_text.py --config-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/config.json --transcription-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/esd.list --train-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/train.list --val-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/val.list --val-per-lang 4 --yomi_error skip --correct_path --use_jp_extra
+/usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+
+2026-11-13 06:51:53.087 +00:00 | WARNING  | gradio_tabs.train:preprocess_text:205 - Step 3: preprocessing text finished with stderr.
+2026-11-13 06:51:53.088 +00:00 | INFO     | gradio_tabs.train:bert_gen:215 - Step 4: start bert_gen...
+2026-11-13 06:51:53.088 +00:00 | INFO     | style_bert_vits2.utils.subprocess:run_script_with_log:23 - Running: bert_gen.py --config /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/config.json
+2026-11-13 06:53:17.922 +00:00 | WARNING  | style_bert_vits2.utils.subprocess:run_script_with_log:36 - Warning: bert_gen.py --config /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/config.json
+/usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+/usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+
+
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s][A
+
+Loading weights:   2%|▏         | 8/399 [00:00<00:25, 15.62it/s][A
+
+Loading weights:  11%|█         | 42/399 [00:00<00:04, 81.45it/s][A
+
+Loading weights:  15%|█▍        | 59/399 [00:00<00:04, 81.96it/s][A
+
+Loading weights:  19%|█▊        | 74/399 [00:01<00:04, 79.12it/s][A
+
+Loading weights:  23%|██▎       | 90/399 [00:01<00:03, 78.61it/s][A
+
+Loading weights:  27%|██▋       | 106/399 [00:01<00:03, 79.11it/s][A
+
+Loading weights:  31%|███       | 122/399 [00:01<00:03, 78.48it/s][A
+
+Loading weights:  35%|███▍      | 138/399 [00:01<00:03, 77.73it/s][A
+
+Loading weights:  39%|███▊      | 154/399 [00:02<00:03, 77.40it/s][A
+
+Loading weights:  43%|████▎     | 170/399 [00:02<00:02, 77.38it/s][A
+
+Loading weights:  47%|████▋     | 186/399 [00:02<00:02, 77.93it/s][A
+
+Loading weights:  51%|█████     | 202/399 [00:02<00:02, 78.40it/s][A
+
+Loading weights:  55%|█████▍    | 218/399 [00:02<00:02, 77.42it/s][A
+
+Loading weights:  59%|█████▊    | 234/399 [00:03<00:02, 75.93it/s][A
+
+Loading weights:  63%|██████▎   | 250/399 [00:03<00:01, 76.40it/s][A
+
+Loading weights:  67%|██████▋   | 266/399 [00:03<00:01, 76.16it/s][A
+
+Loading weights:  71%|███████   | 282/399 [00:03<00:01, 76.74it/s][A
+
+Loading weights:  75%|███████▍  | 298/399 [00:03<00:01, 75.91it/s][A
+
+Loading weights:  79%|███████▊  | 314/399 [00:04<00:01, 75.27it/s][A
+
+Loading weights:  83%|████████▎ | 330/399 [00:04<00:00, 75.37it/s][A
+
+Loading weights:  87%|████████▋ | 346/399 [00:04<00:00, 75.19it/s][A
+
+Loading weights:  91%|█████████ | 362/399 [00:04<00:00, 75.44it/s][A
+
+Loading weights:  95%|█████████▍| 378/399 [00:05<00:00, 75.45it/s][A
+
+Loading weights:  99%|█████████▊| 394/399 [00:05<00:00, 74.30it/s][A
+Loading weights: 100%|██████████| 399/399 [00:05<00:00, 75.88it/s]
+
+2026-11-13 06:53:17.923 +00:00 | WARNING  | gradio_tabs.train:bert_gen:224 - Step 4: bert_gen finished with stderr.
+2026-11-13 06:53:17.923 +00:00 | INFO     | gradio_tabs.train:style_gen:234 - Step 5: start style_gen...
+2026-11-13 06:53:17.924 +00:00 | INFO     | style_bert_vits2.utils.subprocess:run_script_with_log:23 - Running: style_gen.py --config /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/config.json --num_processes 2
+2026-11-13 06:53:31.546 +00:00 | ERROR    | style_bert_vits2.utils.subprocess:run_script_with_log:33 - Error: style_gen.py --config /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_v1/config.json --num_processes 2
+Traceback (most recent call last):
+  File "/content/Style-Bert-VITS2/style_gen.py", line 8, in <module>
+    from pyannote.audio import Inference, Model
+  File "/usr/local/lib/python3.13/dist-packages/pyannote/audio/__init__.py", line 29, in <module>
+    from .core.inference import Inference
+  File "/usr/local/lib/python3.13/dist-packages/pyannote/audio/core/inference.py", line 35, in <module>
+    from pyannote.audio.core.io import AudioFile
+  File "/usr/local/lib/python3.13/dist-packages/pyannote/audio/core/io.py", line 60, in <module>
+    ) -> torchaudio.AudioMetaData:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'torchaudio' has no attribute 'AudioMetaData'
+
+2026-11-13 06:53:31.547 +00:00 | ERROR    | gradio_tabs.train:style_gen:246 - Step 5: style_gen failed.
+2026-11-13 06:58:43.532 +00:00 | DEBUG    | style_bert_vits2.nlp.japanese.pyopenjtalk_worker:terminate_worker:147 - pyopenjtalk worker server terminated

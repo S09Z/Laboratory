@@ -1,0 +1,55 @@
+2026-11-13 08:22:32.882 +00:00 | INFO     | gradio_tabs.train:initialize:72 - Step 1: start initialization...
+model_name: amitaro_runrun, batch_size: 4, epochs: 100, save_every_steps: 500, freeze_ZH_bert: False, freeze_JP_bert: False, freeze_EN_bert: False, freeze_style: False, freeze_decoder: False, use_jp_extra: True
+2026-11-13 08:22:32.884 +00:00 | WARNING  | gradio_tabs.train:initialize:103 - Step 1: /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/models already exists, so copy it to backup to /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/models_backup
+2026-11-13 08:23:29.367 +00:00 | SUCCESS  | gradio_tabs.train:initialize:132 - Step 1: initialization finished.
+2026-11-13 08:23:29.369 +00:00 | INFO     | gradio_tabs.train:resample:137 - Step 2: start resampling...
+2026-11-13 08:23:29.369 +00:00 | INFO     | style_bert_vits2.utils.subprocess:run_script_with_log:23 - Running: resample.py -i /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/raw -o /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/wavs --num_processes 2 --sr 44100 --trim
+2026-11-13 08:29:21.954 +00:00 | SUCCESS  | style_bert_vits2.utils.subprocess:run_script_with_log:38 - Success: resample.py -i /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/raw -o /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/wavs --num_processes 2 --sr 44100 --trim
+2026-11-13 08:29:21.955 +00:00 | SUCCESS  | gradio_tabs.train:resample:163 - Step 2: resampling finished.
+2026-11-13 08:29:21.956 +00:00 | INFO     | gradio_tabs.train:preprocess_text:170 - Step 3: start preprocessing text...
+2026-11-13 08:29:21.957 +00:00 | INFO     | style_bert_vits2.utils.subprocess:run_script_with_log:23 - Running: preprocess_text.py --config-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/config.json --transcription-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/esd.list --train-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/train.list --val-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/val.list --val-per-lang 4 --yomi_error skip --correct_path --use_jp_extra
+2026-11-13 08:29:42.772 +00:00 | WARNING  | style_bert_vits2.utils.subprocess:run_script_with_log:36 - Warning: preprocess_text.py --config-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/config.json --transcription-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/esd.list --train-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/train.list --val-path /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/val.list --val-per-lang 4 --yomi_error skip --correct_path --use_jp_extra
+/usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+
+2026-11-13 08:29:42.773 +00:00 | WARNING  | gradio_tabs.train:preprocess_text:205 - Step 3: preprocessing text finished with stderr.
+2026-11-13 08:29:42.774 +00:00 | INFO     | gradio_tabs.train:bert_gen:215 - Step 4: start bert_gen...
+2026-11-13 08:29:42.774 +00:00 | INFO     | style_bert_vits2.utils.subprocess:run_script_with_log:23 - Running: bert_gen.py --config /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/config.json
+2026-11-13 08:35:02.408 +00:00 | WARNING  | style_bert_vits2.utils.subprocess:run_script_with_log:36 - Warning: bert_gen.py --config /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/config.json
+/usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+
+2026-11-13 08:35:02.410 +00:00 | WARNING  | gradio_tabs.train:bert_gen:224 - Step 4: bert_gen finished with stderr.
+2026-11-13 08:35:02.410 +00:00 | INFO     | gradio_tabs.train:style_gen:234 - Step 5: start style_gen...
+2026-11-13 08:35:02.411 +00:00 | INFO     | style_bert_vits2.utils.subprocess:run_script_with_log:23 - Running: style_gen.py --config /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/config.json --num_processes 2
+2026-11-13 08:35:37.917 +00:00 | WARNING  | style_bert_vits2.utils.subprocess:run_script_with_log:36 - Warning: style_gen.py --config /content/drive/MyDrive/Laboratory/sbv2/Data/amitaro_runrun/config.json --num_processes 2
+/usr/local/lib/python3.13/dist-packages/pyannote/database/util.py:182: SyntaxWarning: invalid escape sequence '\s'
+  sep="\s+",
+/usr/local/lib/python3.13/dist-packages/pyannote/database/util.py:216: SyntaxWarning: invalid escape sequence '\s'
+  sep="\s+",
+/usr/local/lib/python3.13/dist-packages/pyannote/database/util.py:253: SyntaxWarning: invalid escape sequence '\s'
+  sep="\s+",
+/usr/local/lib/python3.13/dist-packages/pyannote/database/util.py:284: SyntaxWarning: invalid escape sequence '\s'
+  data = pd.read_csv(file_uem, names=names, dtype=dtype, sep="\s+")
+/usr/local/lib/python3.13/dist-packages/pyannote/database/util.py:309: SyntaxWarning: invalid escape sequence '\s'
+  data = pd.read_csv(path, names=names, dtype=dtype, sep="\s+")
+/usr/local/lib/python3.13/dist-packages/pyannote/database/loader.py:93: SyntaxWarning: invalid escape sequence '\s'
+  file_trial, sep="\s+", names=["reference", "uri1", "uri2"]
+/usr/local/lib/python3.13/dist-packages/pyannote/database/loader.py:292: SyntaxWarning: invalid escape sequence '\s'
+  ctm, names=names, dtype=dtype, sep="\s+"
+/usr/local/lib/python3.13/dist-packages/pyannote/database/loader.py:357: SyntaxWarning: invalid escape sequence '\s'
+  mapping, names=names, dtype=dtype, sep="\s+"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+/usr/local/lib/python3.13/dist-packages/lightning_fabric/utilities/cloud_io.py:73: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+/usr/local/lib/python3.13/dist-packages/pyannote/audio/utils/reproducibility.py:74: ReproducibilityWarning: TensorFloat-32 (TF32) has been disabled as it might lead to reproducibility issues and lower accuracy.
+It can be re-enabled by calling
+   >>> import torch
+   >>> torch.backends.cuda.matmul.allow_tf32 = True
+   >>> torch.backends.cudnn.allow_tf32 = True
+See https://github.com/pyannote/pyannote-audio/issues/1370 for more details.
+
+  warnings.warn(
+
+2026-11-13 08:35:37.918 +00:00 | WARNING  | gradio_tabs.train:style_gen:252 - Step 5: style_gen finished with stderr.
+2026-11-13 08:35:37.918 +00:00 | SUCCESS  | gradio_tabs.train:preprocess_all:321 - Success: All preprocess finished!
+2026-11-13 08:40:42.353 +00:00 | DEBUG    | style_bert_vits2.nlp.japanese.pyopenjtalk_worker:terminate_worker:147 - pyopenjtalk worker server terminated

@@ -1,0 +1,15 @@
+# Thai tone (0 mid, 1 low, 2 falling, 3 high, 4 rising) → pitch contour over the syllable's morae (0=L, 1=H).
+# "carry" = same pitch as the previous mora (L at the start of a phrase).
+# A syllable with one mora takes the LAST value of a two-value contour... except falling, which keeps H.
+default:   # spec §5.3
+  0: carry
+  1: [0]
+  2: [1, 0]
+  3: [1]
+  4: [0, 1]
+learner:   # rule 30 + rules 25/26 (high merged with rising, low raised to mid level)
+  0: [0]
+  1: [0]
+  2: [1, 0]
+  3: [0, 1]
+  4: [0, 1]

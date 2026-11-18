@@ -1,0 +1,38 @@
+# Accent rules from docs/research_report.md (table "ร่างตารางกฎแปลง phoneme ไทย → สำเนียงญี่ปุ่น").
+# level = the report's "ระดับ" column (light ⊂ medium ⊂ strong); "กลาง–หนัก" counts as medium.
+# impl: syllable = rewrites Syllable fields; mapper = sets a hint for the mora mapper;
+#       implicit = produced by the Japanese phone set itself; tone_map / prosody = handled in mora.py;
+#       out_of_scope = not implemented this round (spec §5.2b).
+- {id: 1,  level: light,  evidence: E,   impl: syllable,     desc: "/l/ in clusters → r"}
+- {id: 2,  level: light,  evidence: E,   impl: syllable,     desc: "initial /l/ → r on rising tone or reduplication"}
+- {id: 3,  level: medium, evidence: E+I, impl: syllable,     desc: "all /l/ and /r/ → tap r"}
+- {id: 4,  level: light,  evidence: E,   impl: syllable,     desc: "coda n before k/kʰ → ŋ"}
+- {id: 5,  level: light,  evidence: E,   impl: syllable,     desc: "coda ŋ before t/tʰ/n/l → n"}
+- {id: 6,  level: medium, evidence: E+I, impl: mapper,       desc: "nasal codas → assimilating ン"}
+- {id: 7,  level: strong, evidence: I,   impl: mapper,       desc: "coda m → mu"}
+- {id: 8,  level: light,  evidence: E,   impl: syllable,     desc: "/t/ → tʰ occasionally"}
+- {id: 9,  level: strong, evidence: I,   impl: implicit,     desc: "aspiration contrast merged"}
+- {id: 10, level: medium, evidence: I,   impl: implicit,     desc: "tɕ/tɕʰ → ch"}
+- {id: 11, level: medium, evidence: I,   impl: implicit,     desc: "f → ɸ"}
+- {id: 12, level: medium, evidence: I,   impl: implicit,     desc: "w → ɰ"}
+- {id: 13, level: medium, evidence: I,   impl: implicit,     desc: "initial ŋ → g"}
+- {id: 14, level: strong, evidence: I,   impl: implicit,     desc: "cluster epenthesis"}
+- {id: 15, level: medium, evidence: I,   impl: mapper,       desc: "coda p/t/k before consonant → ッ"}
+- {id: 16, level: strong, evidence: I,   impl: mapper,       desc: "phrase-final p/t/k → ッ + C + epenthetic vowel"}
+- {id: 17, level: medium, evidence: I,   impl: implicit,     desc: "coda w/j → vowel mora"}
+- {id: 18, level: light,  evidence: E+I, impl: syllable,     desc: "long vowel in closed syllable shortened"}
+- {id: 19, level: light,  evidence: E,   impl: syllable,     desc: "short open vowel lengthened occasionally"}
+- {id: 20, level: medium, evidence: I,   impl: implicit,     desc: "ɛ→e, ɔ→o"}
+- {id: 21, level: strong, evidence: I,   impl: mapper,       desc: "ɤ → u (else o)"}
+- {id: 22, level: medium, evidence: I,   impl: implicit,     desc: "u less rounded"}
+- {id: 23, level: medium, evidence: I,   impl: mapper,       desc: "diphthongs split; ia → e before nasal at strong"}
+- {id: 24, level: strong, evidence: I,   impl: implicit,     desc: "devoicing of epenthetic i/u"}
+- {id: 25, level: light,  evidence: E,   impl: syllable,     desc: "high tone → mid (short) / rising (long)"}
+- {id: 26, level: light,  evidence: E,   impl: syllable,     desc: "low tone on long vowel → mid"}
+- {id: 27, level: medium, evidence: E,   impl: syllable,     desc: "high and rising merged to rising"}
+- {id: 28, level: light,  evidence: E+I, impl: tone_map,     desc: "falling kept as H.L"}
+- {id: 29, level: light,  evidence: E+I, impl: prosody,      desc: "narrower F0 range (intonation_scale < 1)"}
+- {id: 30, level: strong, evidence: I,   impl: tone_map,     desc: "tone → mora pitch table 'learner'"}
+- {id: 31, level: light,  evidence: E,   impl: prosody,      desc: "pauses between words"}
+- {id: 32, level: medium, evidence: E+I, impl: implicit,     desc: "mora-timed rhythm"}
+- {id: 33, level: strong, evidence: I,   impl: out_of_scope, desc: "Japanese boundary tones"}

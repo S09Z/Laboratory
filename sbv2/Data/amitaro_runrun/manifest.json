@@ -1,0 +1,42 @@
+{
+  "run_id": "amitaro_runrun",
+  "experiment": "E1",
+  "sbv2_tag": "2.7.0",
+  "gpu": {
+    "name": "Tesla T4",
+    "vram_gb": 15.0
+  },
+  "batch_size": 4,
+  "resume_step": null,
+  "data_hash": "53c15c67a1bc5996",
+  "config": {
+    "log_interval": 200,
+    "eval_interval": 500,
+    "seed": 42,
+    "epochs": 100,
+    "learning_rate": 0.0001,
+    "betas": [
+      0.8,
+      0.99
+    ],
+    "eps": 1e-09,
+    "batch_size": 4,
+    "bf16_run": false,
+    "fp16_run": false,
+    "lr_decay": 0.99996,
+    "segment_size": 16384,
+    "init_lr_ratio": 1,
+    "warmup_epochs": 0,
+    "c_mel": 45,
+    "c_kl": 1.0,
+    "c_commit": 100,
+    "skip_optimizer": false,
+    "freeze_ZH_bert": false,
+    "freeze_JP_bert": false,
+    "freeze_EN_bert": false,
+    "freeze_emo": false,
+    "freeze_style": false,
+    "freeze_decoder": false
+  },
+  "timestamp": "2026-11-13T08:38:41+0000"
+}

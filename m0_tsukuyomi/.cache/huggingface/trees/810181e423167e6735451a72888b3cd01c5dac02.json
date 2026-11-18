@@ -1,0 +1,78 @@
+{
+ "format_version": 1,
+ "files": {
+  ".gitattributes": {
+   "size": 1519,
+   "blob_id": "a6344aac8c09253b3b630fb776ae94478aa0275b"
+  },
+  ".gitignore": {
+   "size": 19,
+   "blob_id": "763513e910f7036a1a3cdb21dce8e57da2451891"
+  },
+  "README.md": {
+   "size": 923,
+   "blob_id": "1d55c04e63a2275155feff0980a2bbedd6954323"
+  },
+  "config.json": {
+   "size": 1967,
+   "blob_id": "15f1bbdcffb2fed68eb74194e16917a70fe1d0ba"
+  },
+  "mos_tsukuyomi-chan.csv": {
+   "size": 2374,
+   "blob_id": "6b56cd21aec8fbfa3e4d1ca02677904e90e12bdd"
+  },
+  "mos_tsukuyomi-chan.png": {
+   "size": 88322,
+   "blob_id": "247cc84936760e6192b3bc26086a8350218298cf"
+  },
+  "style_vectors.npy": {
+   "size": 1152,
+   "blob_id": "0a381ea6c7f926feecdeba9604b7c8950930db8b",
+   "lfs_sha256": "c3b8cda77c40697e8548eea0fa74bcf6bd107703fd9bb07acd4d169a6858a57b",
+   "lfs_size": 1152,
+   "xet_hash": "df54d37d531377d8c6a951506ef88fe3a6db99247cbf6cf7a741f4db4c8918c1"
+  },
+  "tsukuyomi-chan_e116_s3000.safetensors": {
+   "size": 198768188,
+   "blob_id": "5336cb0f13f29096cd4a5afcc1a3b286629b7743",
+   "lfs_sha256": "20f60dfc5893457280d9e2539380c189b4d1f292359f559f13f88b617d8c917b",
+   "lfs_size": 198768188,
+   "xet_hash": "f6386444ffd1114ca9527dc45c38bcab51020ef0a7264b324df32fd0bf1106ae"
+  },
+  "tsukuyomi-chan_e154_s4000.safetensors": {
+   "size": 198768188,
+   "blob_id": "08471c9bf58854a3c7a93e23300b2facd6f9eb5f",
+   "lfs_sha256": "badc75f775f2faf8a80bdddc01040bdcc6a19f5410834dae1936dda6885246b5",
+   "lfs_size": 198768188,
+   "xet_hash": "77d9d208a9d73cec66e54c1ea5d2c10263d3300a15ab2c5dd6742f29e4ccb42b"
+  },
+  "tsukuyomi-chan_e193_s5000.safetensors": {
+   "size": 198768188,
+   "blob_id": "2b1f2c2ec0ec22261c3b9b33d6234c4359487d58",
+   "lfs_sha256": "f9f49f782ceccec5699675cafcb64a0ddd5f39cfd13be9b735c29891400d5714",
+   "lfs_size": 198768188,
+   "xet_hash": "c416291c14b18e42784cc659ea8998690370be1ce8b7f5a2633755db532a4431"
+  },
+  "tsukuyomi-chan_e200_s5200.safetensors": {
+   "size": 198768188,
+   "blob_id": "46c81239cd0a035ea5357989737b62aeb512fc82",
+   "lfs_sha256": "bdf558d05cc6c56fdc5fa295e290b6f916ae5fc367ffe0c8c0091850cdf17c8c",
+   "lfs_size": 198768188,
+   "xet_hash": "6b0481a2f7bb6808b969a31e0062a132385112b9b8e114897747b2052d215cf9"
+  },
+  "tsukuyomi-chan_e39_s1000.safetensors": {
+   "size": 198768188,
+   "blob_id": "1fb7a697dfe2b923af6f3129de3e417c6fb5cbc6",
+   "lfs_sha256": "86b38d3a10aa0d70ee34b000264e746304aedbda1cf12a3c550c54ed365708a2",
+   "lfs_size": 198768188,
+   "xet_hash": "7c4332f534d506395d6762ce4036a3c87b86aea358f3d724680147fb086dafb8"
+  },
+  "tsukuyomi-chan_e77_s2000.safetensors": {
+   "size": 198768188,
+   "blob_id": "8dd62ba8e4346a9d0acabec71bdb783551137c4e",
+   "lfs_sha256": "bbb4641c022830be5c300c582341966d8549f2c549f7edb0ae2c8a6199653c10",
+   "lfs_size": 198768188,
+   "xet_hash": "bc8e9676ba7c0f0199e8773bf7bd8cbc3cdd808f73f4948fef5c6cc0be8f01d2"
+  }
+ }
+}
