@@ -71,9 +71,10 @@ from pathlib import Path
 assert shutil.which("nvidia-smi"), "No GPU: Settings > Accelerator > GPU T4 x2 แล้วรันใหม่"
 
 LAB = Path(LAB)
+# Kaggle แตก .zip ให้เองตอนสร้าง Dataset → รองรับทั้งไฟล์ zip และโฟลเดอร์ที่แตกแล้ว
 _zips = sorted(Path("/kaggle/input").glob("**/thaijp_tts.zip"))
-assert _zips, "ไม่พบ thaijp_tts.zip ใน /kaggle/input — อัปโหลดเป็น Dataset แล้ว Add Data เข้า notebook นี้"
-PROJ_ZIP = _zips[0]
+_dirs = sorted(Path("/kaggle/input").glob("**/thaijp_accent/lexicon.tsv"))
+assert _zips or _dirs, "ไม่พบโปรเจกต์ใน /kaggle/input — อัปโหลด thaijp_tts.zip เป็น Dataset แล้ว Add Data เข้า notebook นี้"
 # รอบก่อนหน้า (attach output ของ notebook นี้เป็น Input) → คัดลอก Laboratory/ กลับมาเพื่อเทรนต่อ
 if not (LAB / "sbv2").exists():
     for _prev in sorted(Path("/kaggle/input").glob("**/Laboratory/sbv2")):
@@ -84,8 +85,11 @@ if not (LAB / "sbv2").exists():
 PROJ = Path("/kaggle/working/thaijp_tts")
 # แตก zip ใหม่ทุกครั้ง เพื่อให้ได้โค้ดล่าสุดที่อัปโหลดไว้ (ไฟล์ที่คุณแก้เอง เช่น lexicon อยู่ใน Laboratory/ ไม่หาย)
 shutil.rmtree(PROJ, ignore_errors=True)
-with zipfile.ZipFile(PROJ_ZIP) as z:
-    z.extractall("/kaggle/working")
+if _zips:
+    with zipfile.ZipFile(_zips[0]) as z:
+        z.extractall("/kaggle/working")
+else:
+    shutil.copytree(_dirs[0].parent.parent, PROJ)
 # ล้าง module ของโปรเจกต์ที่ import ค้างไว้ใน kernel นี้ — ไม่งั้นจะยังใช้โค้ดเก่าแม้แตก zip ใหม่แล้ว
 for _m in [m for m in sys.modules if m == "colab" or m.startswith(("thaijp_accent", "colab."))]:
     del sys.modules[_m]

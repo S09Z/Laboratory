@@ -55,9 +55,10 @@ assert (LAB / "thaijp_tts.zip").exists(), f"ไม่พบ {LAB/'thaijp_tts.zip
 
 PROJ = Path("/content/thaijp_tts")''',
      '''LAB = Path(LAB)
+# Kaggle แตก .zip ให้เองตอนสร้าง Dataset → รองรับทั้งไฟล์ zip และโฟลเดอร์ที่แตกแล้ว
 _zips = sorted(Path("/kaggle/input").glob("**/thaijp_tts.zip"))
-assert _zips, "ไม่พบ thaijp_tts.zip ใน /kaggle/input — อัปโหลดเป็น Dataset แล้ว Add Data เข้า notebook นี้"
-PROJ_ZIP = _zips[0]
+_dirs = sorted(Path("/kaggle/input").glob("**/thaijp_accent/lexicon.tsv"))
+assert _zips or _dirs, "ไม่พบโปรเจกต์ใน /kaggle/input — อัปโหลด thaijp_tts.zip เป็น Dataset แล้ว Add Data เข้า notebook นี้"
 # รอบก่อนหน้า (attach output ของ notebook นี้เป็น Input) → คัดลอก Laboratory/ กลับมาเพื่อเทรนต่อ
 if not (LAB / "sbv2").exists():
     for _prev in sorted(Path("/kaggle/input").glob("**/Laboratory/sbv2")):
@@ -69,7 +70,7 @@ PROJ = Path("/kaggle/working/thaijp_tts")'''),
     ("# แตก zip ใหม่ทุกครั้ง เพื่อให้ได้โค้ดล่าสุดที่อัปโหลดไว้ (ไฟล์ที่คุณแก้เอง เช่น lexicon อยู่บน Drive ไม่หาย)",
      "# แตก zip ใหม่ทุกครั้ง เพื่อให้ได้โค้ดล่าสุดที่อัปโหลดไว้ (ไฟล์ที่คุณแก้เอง เช่น lexicon อยู่ใน Laboratory/ ไม่หาย)"),
     ('with zipfile.ZipFile(LAB / "thaijp_tts.zip") as z:\n    z.extractall("/content")',
-     'with zipfile.ZipFile(PROJ_ZIP) as z:\n    z.extractall("/kaggle/working")'),
+     'if _zips:\n    with zipfile.ZipFile(_zips[0]) as z:\n        z.extractall("/kaggle/working")\nelse:\n    shutil.copytree(_dirs[0].parent.parent, PROJ)'),
     ('SBV2 = Path("/content/Style-Bert-VITS2")\nMARK = Path("/content/.sbv2_installed")',
      'Path("/kaggle/temp").mkdir(exist_ok=True)   # ไม่ถูกนับเป็น output — ใส่ของใหญ่ที่สร้างใหม่ได้\n'
      'SBV2 = Path("/kaggle/temp/Style-Bert-VITS2")\nMARK = Path("/kaggle/temp/.sbv2_installed")'),
