@@ -107,7 +107,9 @@ assert bad <= 2, f"parser อ่าน IPA ไม่ได้ {bad}/10 คำ"
 
 # %%
 import gc
+import re
 
+import numpy as np
 import soundfile as sf
 import torch
 from huggingface_hub import snapshot_download
@@ -118,11 +120,21 @@ from thaijp_accent.synth import synthesize
 
 _DEVICE_CACHE = {}
 
+def list_ckpts(model_dir: Path) -> list[Path]:
+    """checkpoint สำหรับ inference เท่านั้น (ไม่รวม G_/D_/WD_/DUR_ ที่เป็นของ trainer) เรียงตามเวลา"""
+    skip = re.compile(r"^(G|D|WD|DUR)_\d+")
+    return sorted((p for p in model_dir.rglob("*.safetensors") if not skip.match(p.name)),
+                  key=lambda p: p.stat().st_mtime)
+
 def load_tts(model_dir: Path) -> TTSModel:
-    sts = sorted(model_dir.rglob("*.safetensors"), key=lambda p: p.stat().st_mtime)
-    assert sts, f"ยังไม่มีโมเดลใน {model_dir} — เทรนใน Colab ก่อน แล้วรอ Drive sync"
+    sts = list_ckpts(model_dir)
+    assert sts, f"ยังไม่มีโมเดล inference (*.safetensors) ใน {model_dir} — เทรนใน Colab ก่อน แล้วรอ Drive sync"
     cfg = next(model_dir.rglob("config.json"))
-    sv = next(model_dir.rglob("style_vectors.npy"))
+    sv = next(model_dir.rglob("style_vectors.npy"), None)
+    if sv is None:   # โมเดลสาธารณะบางตัว (เช่น M0) ไม่แนบ style_vectors.npy → ใช้เวกเตอร์ neutral ตัวเดียว
+        sv = model_dir / "style_vectors.npy"
+        np.save(sv, np.zeros((1, 256), dtype=np.float32))
+        print("⚠️ ไม่พบ style_vectors.npy — สร้าง neutral (zeros) ที่", sv)
     probe_inp, _ = FE.convert("สวัสดี", AccentLevel.LIGHT)
 
     def probe(device):
@@ -228,7 +240,7 @@ from thaijp_accent.eval import make_listening_sheet, summarize, thai_cer, transc
 if not RUN_EVAL:
     print("ข้ามส่วน 5 (RUN_EVAL = False)")
 else:
-    _ckpt = sorted((ASSETS_ROOT / TRAIN_NAME).rglob("*.safetensors"), key=lambda p: p.stat().st_mtime)[-1].stem
+    _ckpt = list_ckpts(ASSETS_ROOT / TRAIN_NAME)[-1].stem
     EV = OUT / f"eval_{TRAIN_NAME}_{_ckpt}_{INTONATION}"
     EV.mkdir(exist_ok=True)
     rows = []

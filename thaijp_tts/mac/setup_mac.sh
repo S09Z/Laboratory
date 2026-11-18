@@ -48,9 +48,13 @@ uv pip install "setuptools<81" wheel
 uv pip install -r "$SBV2/requirements-infer.txt"
 uv pip install pythainlp python-crfsuite jiwer soundfile sentencepiece librosa pyyaml \
                jupyterlab ipykernel ipywidgets jupytext nbformat "ml_dtypes>=0.5.1"
+# SBV2 2.7.0 pin torch<2.4 → transformers 5.x (ต้องการ torch>=2.6) ใช้ไม่ได้ ต้องคุมไว้ที่ 4.x
+uv pip install "transformers>=4.40,<5" "huggingface_hub<1"
 
 step "6/7 ดาวน์โหลด BERT ญี่ปุ่น (inference เท่านั้น)"
 ( cd "$SBV2" && python initialize.py --only_infer --skip_default_models )
+# torch<2.4 ไม่ยอมโหลด .bin ผ่าน transformers ใหม่ → แปลง BERT เป็น safetensors
+python "$PROJ/mac/bin_to_safetensors.py" "$SBV2/bert/deberta-v2-large-japanese-char-wwm"
 
 step "7/7 ลงทะเบียน kernel และสร้าง notebook"
 python -m ipykernel install --user --name thaijp-mac --display-name "thaijp (Mac M3)"
