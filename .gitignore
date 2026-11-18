@@ -27,6 +27,14 @@ venv/
 *.wav
 *.mp3
 *.flac
+*.ogg
+*.oga
+*.opus
+*.m4a
+*.aac
+*.aif
+*.aiff
+*.wma
 *.pth
 *.pt
 *.safetensors
