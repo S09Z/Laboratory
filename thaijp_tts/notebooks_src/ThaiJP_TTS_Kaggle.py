@@ -130,7 +130,7 @@ if not MARK.exists():
     sh(f"cd {SBV2} && uv pip install --system -r requirements-colab.txt --no-progress", env)
     print("4/5 thaijp deps…")
     # soxr: transformers 5 ต้องใช้ตอนโหลด WavLM (training) · tensorboard: train_ms_jp_extra.py import
-    sh('uv pip install --system pythainlp python-crfsuite jiwer soundfile sentencepiece soxr tensorboard "ml_dtypes>=0.5.1" --no-progress', env)
+    sh('uv pip install --system pythainlp python-crfsuite jiwer soundfile sentencepiece soxr tensorboard "ml_dtypes>=0.5.1" "numpy<2.3" --no-progress', env)
     print("5/5 initialize (ดาวน์โหลด pretrained JP-Extra)…")
     sh(f"cd {SBV2} && python initialize.py --skip_default_models", env)
     MARK.write_text(time.ctime())
@@ -149,12 +149,22 @@ try:   # SBV2 requirements ลด ml_dtypes ลงเป็นรุ่นที
         _missing.append('"ml_dtypes>=0.5.1"')
 except ImportError:
     pass
+
+import numpy as _np
+
+_RESTART = False
+if tuple(int(x) for x in _np.__version__.split(".")[:2]) >= (2, 3):   # numba รองรับ NumPy ≤ 2.2
+    _missing.append('"numpy<2.3"')
+    _RESTART = True
 if _missing:
     print("ติดตั้งเพิ่ม:", _missing)
     _env = {**os.environ, "PATH": "/root/.local/bin:/root/.cargo/bin:" + os.environ["PATH"]}
     _uv = shutil.which("uv", path=_env["PATH"])
     _cmd = (f"{_uv} pip install --system " if _uv else f"{sys.executable} -m pip install -q ") + " ".join(_missing)
     subprocess.run(_cmd, shell=True, check=True, env=_env)
+    if _RESTART:   # NumPy ถูกโหลดไปแล้ว → restart kernel แล้วกด Run All อีกครั้ง
+        print("🔁 ปรับ NumPy แล้ว กำลัง restart kernel — กด Run All อีกครั้ง")
+        os.kill(os.getpid(), 9)
 
 os.chdir(SBV2)
 if str(SBV2) not in sys.path:

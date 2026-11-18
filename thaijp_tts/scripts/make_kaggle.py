@@ -100,6 +100,12 @@ if PURGE_TRASHED_CHECKPOINTS:
 (ASSETS_ROOT / TRAIN_NAME).mkdir(parents=True, exist_ok=True)
 '''),
     ("cfg[\"train\"][\"bf16_run\"] = False          # T4 ไม่รองรับ bf16", "cfg[\"train\"][\"bf16_run\"] = False          # T4/P100 ไม่รองรับ bf16"),
+    ('soxr tensorboard "ml_dtypes>=0.5.1" --no-progress', 'soxr tensorboard "ml_dtypes>=0.5.1" "numpy<2.3" --no-progress'),   # numba (librosa) รองรับ NumPy ≤ 2.2
+    ('if _missing:\n    print("ติดตั้งเพิ่ม:", _missing)',
+     '\nimport numpy as _np\n\n_RESTART = False\nif tuple(int(x) for x in _np.__version__.split(".")[:2]) >= (2, 3):   # numba รองรับ NumPy ≤ 2.2\n'
+     '    _missing.append(\'"numpy<2.3"\')\n    _RESTART = True\nif _missing:\n    print("ติดตั้งเพิ่ม:", _missing)'),
+    ("    subprocess.run(_cmd, shell=True, check=True, env=_env)\n",
+     "    subprocess.run(_cmd, shell=True, check=True, env=_env)\n    if _RESTART:   # NumPy ถูกโหลดไปแล้ว → restart kernel แล้วกด Run All อีกครั้ง\n        print(\"🔁 ปรับ NumPy แล้ว กำลัง restart kernel — กด Run All อีกครั้ง\")\n        os.kill(os.getpid(), 9)\n"),
     ("`Laboratory/lexicon.tsv` บน Drive", "`Laboratory/lexicon.tsv`"),
     ("ไฟล์นี้อยู่บน Drive จึงไม่หายเมื่อเปลี่ยนเครื่อง", "ไฟล์นี้อยู่ใน Laboratory/ (output) จึงต่อรอบถัดไปได้"),
     ("library ที่ต้องมี · พื้นที่ Drive ·", "library ที่ต้องมี · พื้นที่ดิสก์ ·"),
