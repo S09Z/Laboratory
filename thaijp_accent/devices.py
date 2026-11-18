@@ -1,8 +1,8 @@
 """Device and path helpers for running inference on a Mac (Apple Silicon)."""
 from __future__ import annotations
 
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 
 def pick_device(available: dict[str, bool] | None = None, probe: Callable[[str], None] | None = None) -> str:

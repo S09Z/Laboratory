@@ -52,7 +52,8 @@ def test_patch_adds_hf_token_compat_before_pyannote(tmp_path):
 
 
 def test_hf_wrapper_maps_use_auth_token_to_token(tmp_path, monkeypatch):
-    import sys, types
+    import sys
+    import types
     calls = {}
     fake_hh = types.SimpleNamespace(hf_hub_download=lambda *a, **k: calls.update(k) or "path")
     monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hh)

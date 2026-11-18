@@ -58,8 +58,16 @@ LAB = "/content/drive/MyDrive/Laboratory"
 # **ควรเห็น:** `✅ setup ready`
 
 # %%
-import os, re, sys, subprocess, zipfile, shutil, json, time
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import time
+import zipfile
 from pathlib import Path
+
 from google.colab import drive
 
 # ตรวจ GPU ก่อนเสียเวลาติดตั้ง (ไม่เทรนบน CPU)
@@ -122,6 +130,7 @@ if not MARK.exists():
 
 # runtime ที่ติดตั้งไว้ก่อนหน้า (จาก notebook รุ่นเก่า) อาจขาด dependency เหล่านี้ — ติดตั้งเพิ่มเฉพาะที่ขาด
 import importlib.util
+
 _need = {"pkg_resources": '"setuptools<81"', "soxr": "soxr", "tensorboard": "tensorboard", "pycrfsuite": "python-crfsuite"}
 _missing = [pkg for mod, pkg in _need.items() if importlib.util.find_spec(mod) is None]
 try:   # SBV2 requirements ลด ml_dtypes ลงเป็นรุ่นที่ไม่มี float4 → onnx/tensorflow import ไม่ได้ ตัวเทรนพัง
@@ -146,6 +155,7 @@ OUT = LAB / "outputs"
 for p in (DATASET_ROOT, ASSETS_ROOT, OUT, LAB / "datasets"):
     p.mkdir(parents=True, exist_ok=True)
 import yaml
+
 with open(SBV2 / "configs" / "paths.yml", "w", encoding="utf-8") as f:
     yaml.dump({"dataset_root": str(DATASET_ROOT), "assets_root": str(ASSETS_ROOT)}, f)
 print("✅ setup ready")
@@ -156,7 +166,8 @@ print("✅ setup ready")
 # ถ้าไม่ได้ GPU จะหยุดพร้อมบอกวิธีแก้ — ไม่แอบเทรนบน CPU
 
 # %%
-from colab.runtime import ensure_gpu, pick_batch_size, data_hash, write_manifest
+from colab.runtime import data_hash, ensure_gpu, pick_batch_size, write_manifest
+
 GPU = ensure_gpu()
 BATCH_SIZE = pick_batch_size(GPU["vram_gb"])
 print(GPU, "→ batch_size", BATCH_SIZE)
@@ -204,10 +215,12 @@ print("ปัญหา", bad, "คำ (เพิ่มใน lexicon.tsv ได�
 # ถ้ามี ❌ notebook จะหยุดตรงนี้ — ส่งตารางนี้มาให้ผู้พัฒนาดูได้เลย
 
 # %%
-from colab.sbv2_patches import patch_style_gen
 from colab.preflight import run_preflight
+from colab.sbv2_patches import patch_style_gen
+
 print("patch style_gen:", patch_style_gen(SBV2))
 from colab.preflight import required_free_gb
+
 _pf = run_preflight(SBV2, LAB, min_free_gb=required_free_gb(KEEP_CKPTS))   # ช่วงเทรนมี checkpoint สูงสุด KEEP_CKPTS+1 ชุด
 for r in _pf:
     print("✅" if r.ok else "❌", f"{r.name:24s}", r.detail)
@@ -219,13 +232,15 @@ assert all(r.ok for r in _pf), "preflight ไม่ผ่าน — ดูบร
 
 # %%
 import gc
+
 import soundfile as sf
 import torch
-from IPython.display import Audio, display
 from huggingface_hub import snapshot_download
+from IPython.display import Audio, display
 from style_bert_vits2.tts_model import TTSModel
-from thaijp_accent.synth import synthesize
+
 from thaijp_accent.eval import thai_cer, transcribe
+from thaijp_accent.synth import synthesize
 
 SENTS = load_sentences(PROJ / "tests" / "data" / "test_sentences.tsv")
 
@@ -311,9 +326,18 @@ if cers:
 I_ACCEPT_AMITARO_TERMS = False   # ← เปลี่ยนเป็น True หลังอ่านข้อกำหนด
 assert I_ACCEPT_AMITARO_TERMS, "อ่านข้อกำหนดที่ amitaro.net แล้วตั้ง I_ACCEPT_AMITARO_TERMS = True"
 
-import urllib.request, urllib.parse
-from thaijp_accent.data_prep import qc_clip, parse_ita_transcript, match_ita_files, write_esd_list, dedupe_by_sentence, find_dataset_zip
+import urllib.parse
+import urllib.request
+
 from colab.sbv2_patches import patch_style_gen
+from thaijp_accent.data_prep import (
+    dedupe_by_sentence,
+    find_dataset_zip,
+    match_ita_files,
+    parse_ita_transcript,
+    qc_clip,
+    write_esd_list,
+)
 
 MODEL_NAME = RUN_ID
 DS = DATASET_ROOT / MODEL_NAME
@@ -388,8 +412,9 @@ print("✅ preprocess done:", DS, "· data hash", data_hash(DS / "wavs"))
 # **ควรเห็น:** จำนวนไฟล์ที่ถูกแทน (รันซ้ำจะเป็น 0)
 
 # %%
-from thaijp_accent.data_prep import neutralize_bert
 from colab.runtime import ensure_pretrained_init
+from thaijp_accent.data_prep import neutralize_bert
+
 TRAIN_NAME = MODEL_NAME if EXPERIMENT == "E1" else f"{MODEL_NAME}_E2"
 if EXPERIMENT == "E2":
     E2 = DATASET_ROOT / TRAIN_NAME
@@ -421,9 +446,9 @@ print("train dataset:", TRAIN_NAME)
 
 # %%
 from colab.ckpt import find_resumable_checkpoint
-from colab.train_runner import run_training
-from colab.runtime import write_sbv2_config_yml, ensure_pretrained_init
 from colab.drive_trash import drive_service, folder_id, purge_trashed_checkpoints
+from colab.runtime import ensure_pretrained_init, write_sbv2_config_yml
+from colab.train_runner import run_training
 
 TDS = DATASET_ROOT / TRAIN_NAME
 MODELS = TDS / "models"
@@ -522,7 +547,8 @@ display(Audio(str(path)))
 
 # %%
 import csv
-from thaijp_accent.eval import utmos, make_listening_sheet, summarize
+
+from thaijp_accent.eval import make_listening_sheet, summarize, utmos
 
 if not RUN_EVAL:
     print("ข้ามส่วน 5 (RUN_EVAL = False) — ตั้งเป็น True ในส่วนตั้งค่าเมื่อเทรนเสร็จแล้ว")

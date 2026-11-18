@@ -78,8 +78,8 @@ class UmT5G2P:
         self._tok = self._model = None
 
     def _load(self):
-        from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
         import torch
+        from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
         self._tok = AutoTokenizer.from_pretrained(self.model_id)
         self._model = AutoModelForSeq2SeqLM.from_pretrained(self.model_id)

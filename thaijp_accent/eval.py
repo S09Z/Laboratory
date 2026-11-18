@@ -23,8 +23,8 @@ def thai_cer(ref: str, hyp: str) -> float:
 def transcribe(wavs: list[Path], model_id: str = "openai/whisper-large-v3",
                device: str | None = None) -> list[str]:
     """Thai ASR. ``device``: "cuda" / "mps" / "cpu" (default: cuda if available)."""
-    from transformers import pipeline
     import torch
+    from transformers import pipeline
 
     if device is None:
         device = "cuda" if torch.cuda.is_available() else "cpu"

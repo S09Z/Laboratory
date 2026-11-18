@@ -8,8 +8,8 @@ from __future__ import annotations
 import signal
 import subprocess
 import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 from .ckpt import complete_steps, prune_checkpoints, prune_safetensors, safetensors_steps
 

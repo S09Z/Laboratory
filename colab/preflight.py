@@ -9,9 +9,9 @@ import importlib
 import shutil
 import subprocess
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
 
 from .sbv2_patches import SHIM
 

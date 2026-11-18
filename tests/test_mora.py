@@ -6,7 +6,8 @@ from thaijp_accent.g2p import FixtureG2P, parse_ipa
 from thaijp_accent.mora import syllables_to_morae
 from thaijp_accent.rules import apply_rules
 from thaijp_accent.sbv2_symbols import JA_SYMBOLS, PUNCT
-from thaijp_accent.types import AccentLevel as L, Syllable
+from thaijp_accent.types import AccentLevel as L
+from thaijp_accent.types import Syllable
 
 FIX = FixtureG2P(Path(__file__).parent / "data" / "ipa_fixtures.tsv").table
 

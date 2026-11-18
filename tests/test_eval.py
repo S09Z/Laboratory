@@ -31,7 +31,8 @@ def test_summarize_m4_pass_flag(tmp_path):
 
 
 def test_transcribe_uses_dtype_not_deprecated_torch_dtype(monkeypatch, tmp_path):
-    import sys, types
+    import sys
+    import types
     seen = {}
 
     def fake_pipeline(task, **kw):
@@ -45,7 +46,9 @@ def test_transcribe_uses_dtype_not_deprecated_torch_dtype(monkeypatch, tmp_path)
 
 
 def test_utmos_skips_github_api_validation(monkeypatch, tmp_path):
-    import numpy as np, soundfile as sf, torch
+    import numpy as np
+    import soundfile as sf
+    import torch
     sf.write(tmp_path / "a.wav", np.zeros(16000, dtype="float32"), 16000)
     seen = {}
 
@@ -78,7 +81,8 @@ def test_listening_sheet_never_overwrites_filled_sheet(tmp_path):
 
 
 def test_transcribe_falls_back_to_torch_dtype_on_old_transformers(monkeypatch, tmp_path):
-    import sys, types
+    import sys
+    import types
     calls = []
 
     def old_pipeline(task, model, device, torch_dtype=None, **kw):
@@ -93,7 +97,8 @@ def test_transcribe_falls_back_to_torch_dtype_on_old_transformers(monkeypatch, t
 
 
 def test_transcribe_uses_mps_device_string(monkeypatch, tmp_path):
-    import sys, types
+    import sys
+    import types
     seen = {}
     monkeypatch.setitem(sys.modules, "transformers", types.SimpleNamespace(
         pipeline=lambda task, **kw: seen.update(kw) or (lambda p, generate_kwargs=None: {"text": ""})))

@@ -1,7 +1,8 @@
 import copy
 
 from thaijp_accent.rules import REGISTRY, apply_rules, load_rules
-from thaijp_accent.types import AccentLevel as L, Syllable
+from thaijp_accent.types import AccentLevel as L
+from thaijp_accent.types import Syllable
 
 
 def syl(onset, vowel, long=False, coda=None, tone=0, cluster=None, w=0):

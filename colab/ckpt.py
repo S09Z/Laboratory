@@ -3,8 +3,8 @@ from __future__ import annotations
 
 import re
 import shutil
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 PARTS = ("G", "D", "WD")
 _RX = re.compile(r"^(G|D|WD)_(\d+)\.pth$")

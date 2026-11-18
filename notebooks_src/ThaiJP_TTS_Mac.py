@@ -109,8 +109,8 @@ import gc
 
 import soundfile as sf
 import torch
-from IPython.display import Audio, display
 from huggingface_hub import snapshot_download
+from IPython.display import Audio, display
 from style_bert_vits2.tts_model import TTSModel
 
 from thaijp_accent.synth import synthesize

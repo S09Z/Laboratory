@@ -43,7 +43,8 @@ def test_required_free_gb_scales_with_kept_checkpoints():
 
 
 def test_check_modules_flags_old_ml_dtypes(monkeypatch):
-    import sys, types
+    import sys
+    import types
     monkeypatch.setitem(sys.modules, "ml_dtypes", types.SimpleNamespace(__version__="0.4.1"))
     monkeypatch.setattr(pf, "REQUIRED_MODULES", {})
     import pytest
@@ -52,7 +53,8 @@ def test_check_modules_flags_old_ml_dtypes(monkeypatch):
 
 
 def test_ml_dtypes_ok_when_float4_present(monkeypatch):
-    import sys, types
+    import sys
+    import types
     monkeypatch.setitem(sys.modules, "ml_dtypes", types.SimpleNamespace(__version__="0.5.4", float4_e2m1fn=object()))
     monkeypatch.setattr(pf, "REQUIRED_MODULES", {})
     assert pf.check_modules() == "all present"
