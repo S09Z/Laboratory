@@ -250,3 +250,61 @@ def test_on_prune_callback_called_after_pruning(tmp_path):
                               sleep=sleep, log_path=tmp_path / "l.txt", loader=loader,
                               on_prune=lambda: calls.append(1))
     assert calls == [1]
+
+
+# ---- progress reporting ----
+
+SBV2_LOG = (
+    "11-18 09:30:01 | INFO | train_ms_jp_extra.py:600 | Train Epoch: 3 [45%]\n"
+    "11-18 09:30:01 | INFO | train_ms_jp_extra.py:601 | [2.1, 3.4, 1.2, 18.5, 0.9, 1.1, 1200, 0.0002]\n"
+    "11-18 09:31:11 | INFO | train_ms_jp_extra.py:600 | Train Epoch: 3 [90%]\n"
+    "11-18 09:31:11 | INFO | train_ms_jp_extra.py:601 | [2.0, 3.5, 1.1, 17.9, 0.8, 1.0, 1250, 0.0002]\n"
+)
+
+
+def test_parse_progress_takes_latest_step_and_losses():
+    p = train_runner.parse_progress(SBV2_LOG)
+    assert p == {"step": 1250, "epoch": 3, "pct": 90, "lr": 0.0002,
+                 "losses": [2.0, 3.5, 1.1, 17.9, 0.8, 1.0]}
+
+
+def test_parse_progress_none_without_matches():
+    assert train_runner.parse_progress("Loading weights: 0%\n") is None
+    assert train_runner.parse_progress("") is None
+
+
+def test_run_training_prints_progress(tmp_path, capsys):
+    log = tmp_path / "log.txt"
+    proc = FakeProc()
+    t = {"now": 0.0}
+
+    def popen(*a, **k):  # trainer writes to the log after start (old content is skipped)
+        log.write_text(SBV2_LOG, encoding="utf-8")
+        return proc
+
+    def sleep(s):
+        t["now"] += s
+        if t["now"] >= 300:
+            proc.returncode = 0
+
+    train_runner.run_training(["x"], tmp_path, budget_s=1e9, poll_s=30, progress_s=120,
+                              popen=popen, clock=lambda: t["now"], sleep=sleep,
+                              log_path=log, loader=loader)
+    out = capsys.readouterr().out
+    assert "step 1250" in out and "loss" in out
+    assert out.count("step 1250") >= 2  # reported repeatedly, not once
+
+
+def test_run_training_reports_waiting_when_no_progress_yet(tmp_path, capsys):
+    proc = FakeProc()
+    t = {"now": 0.0}
+
+    def sleep(s):
+        t["now"] += s
+        if t["now"] >= 200:
+            proc.returncode = 0
+
+    train_runner.run_training(["x"], tmp_path, budget_s=1e9, poll_s=30, progress_s=120,
+                              popen=lambda *a, **k: proc, clock=lambda: t["now"], sleep=sleep,
+                              log_path=tmp_path / "none.txt", loader=loader)
+    assert "ยังไม่มี step" in capsys.readouterr().out
