@@ -18,6 +18,22 @@ venv/
 .idea/
 .vscode/
 
+# Archives / compressed files
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.tbz2
+*.tar.xz
+*.txz
+*.gz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+
 # Secrets
 .env
 .env.*
