@@ -15,6 +15,10 @@ dev = ["pytest", "jupytext", "nbformat", "librosa", "ruff"]
 [dependency-groups]
 dev = ["pytest", "jupytext", "nbformat", "librosa", "ruff"]
 
+# Training env (CUDA machine / Colab). Training cannot run on Mac: SBV2 train_ms_jp_extra.py is CUDA-only.
+train = ["setuptools<81", "soxr", "tensorboard", "ml_dtypes>=0.5.1",
+         "torch", "transformers", "sentencepiece", "librosa"]
+
 [tool.uv]
 default-groups = ["dev"]
 
