@@ -19,6 +19,8 @@
 # 3. เทรนใช้ได้สูงสุด ~12 ชม./session และโควตา GPU ฟรี ~30 ชม./สัปดาห์ · ไฟล์ใน `/kaggle/working` **หายเมื่อ session จบ**
 #    ถ้าไม่กด **Save Version** — เมื่อเทรนเสร็จหรือหยุดตามงบเวลา ให้กด Save Version (Save & Run All) หรือดาวน์โหลด
 #    `Laboratory/sbv2/model_assets/<RUN_ID>/` เก็บไว้ · จะเทรนต่อรอบถัดไป ให้ attach output ของรอบก่อนเป็น Input (cell ติดตั้งจะคัดลอกกลับให้เอง)
+# 4. **กันงานหาย (แนะนำ):** สร้าง token แบบ *write* ที่ huggingface.co/settings/tokens แล้วใส่ใน **Add-ons > Secrets** ชื่อ `HF_TOKEN`
+#    (เปิดสวิตช์ให้ notebook นี้ใช้) → checkpoint ทุกชุดจะถูกสำรองขึ้น repo private `<ชื่อ HF>/thaijp-tts-ckpt` และ session ใหม่จะกู้กลับมาเทรนต่อเอง
 #
 # | ส่วน | ใช้ GPU | เวลาโดยประมาณ |
 # |---|---|---|
@@ -38,6 +40,7 @@ RUN_ID = "amitaro_runrun"      # ชื่อโมเดล/การทดล�
 DATASET_ZIP = "ITAcorpus_amitaro_runrun.zip"   # สไตล์るんるん (おしゃべり向け) — เหมาะกับ VTuber
 EXPERIMENT = "E1"              # "E1" = BERT ปกติ · "E2" = BERT เป็นศูนย์ (neutral-BERT)
 TRAIN_BUDGET_HOURS = 8.0       # Kaggle จำกัด ~12 ชม./session — เผื่อเวลาติดตั้ง/เตรียมข้อมูล/บันทึกผล
+HF_REPO = ""                   # repo Hugging Face (private) สำรอง checkpoint · ว่าง = "<ชื่อ HF ของคุณ>/thaijp-tts-ckpt" · ต้องมี HF_TOKEN ใน Secrets
 EPOCHS = 100
 SAVE_EVERY_STEPS = 500
 KEEP_CKPTS = 2                 # จำนวน checkpoint ที่เก็บไว้ (≈1.7 GB ต่อชุด) — 2 = ล่าสุด + สำรอง 1 ชุด
@@ -466,12 +469,16 @@ print("train dataset:", TRAIN_NAME)
 
 # %%
 from colab.ckpt import find_resumable_checkpoint
+from colab.hf_backup import make_backup
 from colab.runtime import ensure_pretrained_init, write_sbv2_config_yml
 from colab.train_runner import run_training
 
 TDS = DATASET_ROOT / TRAIN_NAME
 MODELS = TDS / "models"
 MODELS.mkdir(exist_ok=True)
+BACKUP = make_backup(HF_REPO, MODELS, ASSETS_ROOT / TRAIN_NAME)   # สำรอง/กู้ checkpoint ผ่าน Hugging Face (ต้องมี HF_TOKEN)
+if BACKUP:
+    BACKUP.restore()   # session ใหม่ → ดึง checkpoint ล่าสุดกลับมาเทรนต่อ (ถ้ามีไฟล์ในเครื่องอยู่แล้วจะใช้ไฟล์นั้น)
 resume = find_resumable_checkpoint(MODELS)
 if resume is None:   # เริ่มใหม่: ต้องมีน้ำหนัก JP-Extra เสมอ ไม่งั้น SBV2 จะเทรนจากศูนย์แบบเงียบ ๆ
     ensure_pretrained_init(SBV2 / "pretrained_jp_extra", MODELS)
@@ -479,7 +486,7 @@ print("resume from step:", resume or "pretrained JP-Extra base")
 
 free_gpu_memory("m0_model", "my_model")   # ให้ตัวเทรนได้ GPU เต็มที่
 
-_on_prune = None   # Kaggle ไม่มีถังขยะ — ลบไฟล์แล้วคืนพื้นที่ทันที
+_on_prune = BACKUP.push if BACKUP else None   # ทุกครั้งที่บันทึก checkpoint ใหม่ → สำรองขึ้น Hugging Face (Kaggle ไม่มีถังขยะ — ลบไฟล์แล้วคืนพื้นที่ทันที)
 (ASSETS_ROOT / TRAIN_NAME).mkdir(parents=True, exist_ok=True)
 
 cfg_path = TDS / "config.json"

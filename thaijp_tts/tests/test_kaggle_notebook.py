@@ -40,3 +40,10 @@ def test_no_colab_or_drive_dependencies(tmp_path):
 def test_committed_source_is_up_to_date():
     assert (ROOT / "notebooks_src" / "ThaiJP_TTS_Kaggle.py").read_text(encoding="utf-8") == \
         mk.build(mk.SRC.read_text(encoding="utf-8"))
+
+
+def test_hf_backup_is_wired_in_before_resume_and_on_prune(tmp_path):
+    code = "\n".join(c.source for c in _nb(tmp_path).cells if c.cell_type == "code")
+    assert code.index("BACKUP.restore()") < code.index("find_resumable_checkpoint(MODELS)")
+    assert "on_prune=_on_prune" in code and "_on_prune = BACKUP.push if BACKUP else None" in code
+    assert 'HF_REPO = ""' in code

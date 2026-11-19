@@ -36,13 +36,16 @@ INTRO_NEW = """# **เวอร์ชัน Kaggle** (สร้างจาก n
 # 3. เทรนใช้ได้สูงสุด ~12 ชม./session และโควตา GPU ฟรี ~30 ชม./สัปดาห์ · ไฟล์ใน `/kaggle/working` **หายเมื่อ session จบ**
 #    ถ้าไม่กด **Save Version** — เมื่อเทรนเสร็จหรือหยุดตามงบเวลา ให้กด Save Version (Save & Run All) หรือดาวน์โหลด
 #    `Laboratory/sbv2/model_assets/<RUN_ID>/` เก็บไว้ · จะเทรนต่อรอบถัดไป ให้ attach output ของรอบก่อนเป็น Input (cell ติดตั้งจะคัดลอกกลับให้เอง)
+# 4. **กันงานหาย (แนะนำ):** สร้าง token แบบ *write* ที่ huggingface.co/settings/tokens แล้วใส่ใน **Add-ons > Secrets** ชื่อ `HF_TOKEN`
+#    (เปิดสวิตช์ให้ notebook นี้ใช้) → checkpoint ทุกชุดจะถูกสำรองขึ้น repo private `<ชื่อ HF>/thaijp-tts-ckpt` และ session ใหม่จะกู้กลับมาเทรนต่อเอง
 """
 
 REPL: list[tuple[str, str]] = [
     (HEADER_OLD, HEADER_NEW),
     (INTRO_OLD, INTRO_NEW),
     ("TRAIN_BUDGET_HOURS = 3.5       # Colab ฟรีมักถูกตัดราว 4–12 ชม. — หยุดอย่างปลอดภัยก่อน",
-     "TRAIN_BUDGET_HOURS = 8.0       # Kaggle จำกัด ~12 ชม./session — เผื่อเวลาติดตั้ง/เตรียมข้อมูล/บันทึกผล"),
+     "TRAIN_BUDGET_HOURS = 8.0       # Kaggle จำกัด ~12 ชม./session — เผื่อเวลาติดตั้ง/เตรียมข้อมูล/บันทึกผล\n"
+     'HF_REPO = ""                   # repo Hugging Face (private) สำรอง checkpoint · ว่าง = "<ชื่อ HF ของคุณ>/thaijp-tts-ckpt" · ต้องมี HF_TOKEN ใน Secrets'),
     ("PURGE_TRASHED_CHECKPOINTS = True  # ลบ checkpoint เก่าที่ถูกย้ายไปถังขยะ Drive ออกถาวร (เฉพาะไฟล์ checkpoint ของ run นี้)\n", ""),
     ('LAB = "/content/drive/MyDrive/Laboratory"', 'LAB = "/kaggle/working/Laboratory"   # โฟลเดอร์ที่ถูกเก็บเป็น output (จำกัด 20 GB)'),
     ("# **ทำอะไร:** mount Drive, แตกไฟล์โปรเจกต์, ติดตั้ง", "# **ทำอะไร:** หา `thaijp_tts.zip` ใน Input, แตกไฟล์โปรเจกต์, ติดตั้ง"),
@@ -83,6 +86,12 @@ PROJ = Path("/kaggle/working/thaijp_tts")'''),
     ('    sh("apt-get -qq update && apt-get -qq install -y cmake build-essential", env)',
      '    sh("apt-get -qq update && apt-get -qq install -y cmake build-essential", env)   # ต้องเปิด Internet'),
     ('tmp = Path("/content") / (DATASET_ZIP + ".part")', 'tmp = Path("/kaggle/temp") / (DATASET_ZIP + ".part")'),
+    ("from colab.runtime import ensure_pretrained_init, write_sbv2_config_yml\nfrom colab.train_runner import run_training\n",
+     "from colab.hf_backup import make_backup\nfrom colab.runtime import ensure_pretrained_init, write_sbv2_config_yml\nfrom colab.train_runner import run_training\n"),
+    ("resume = find_resumable_checkpoint(MODELS)\n",
+     "BACKUP = make_backup(HF_REPO, MODELS, ASSETS_ROOT / TRAIN_NAME)   # สำรอง/กู้ checkpoint ผ่าน Hugging Face (ต้องมี HF_TOKEN)\n"
+     "if BACKUP:\n    BACKUP.restore()   # session ใหม่ → ดึง checkpoint ล่าสุดกลับมาเทรนต่อ (ถ้ามีไฟล์ในเครื่องอยู่แล้วจะใช้ไฟล์นั้น)\n"
+     "resume = find_resumable_checkpoint(MODELS)\n"),
     ("from colab.drive_trash import drive_service, folder_id, purge_trashed_checkpoints\n", ""),
     ('''_on_prune = None
 if PURGE_TRASHED_CHECKPOINTS:
@@ -96,7 +105,7 @@ if PURGE_TRASHED_CHECKPOINTS:
     _ids.add(folder_id(_svc, _rel(ASSETS_ROOT / TRAIN_NAME)))
     def _on_prune():
         print("ลบ checkpoint เก่าในถังขยะถาวร:", purge_trashed_checkpoints(_svc, _ids), "ไฟล์")
-''', '''_on_prune = None   # Kaggle ไม่มีถังขยะ — ลบไฟล์แล้วคืนพื้นที่ทันที
+''', '''_on_prune = BACKUP.push if BACKUP else None   # ทุกครั้งที่บันทึก checkpoint ใหม่ → สำรองขึ้น Hugging Face (Kaggle ไม่มีถังขยะ — ลบไฟล์แล้วคืนพื้นที่ทันที)
 (ASSETS_ROOT / TRAIN_NAME).mkdir(parents=True, exist_ok=True)
 '''),
     ("cfg[\"train\"][\"bf16_run\"] = False          # T4 ไม่รองรับ bf16", "cfg[\"train\"][\"bf16_run\"] = False          # T4/P100 ไม่รองรับ bf16"),
