@@ -27,7 +27,7 @@ class FakeApi:
         del self.files[path_in_repo]
 
     def download(self, repo_id, filename, local_dir):
-        dst = Path(local_dir) / Path(filename).name
+        dst = Path(local_dir) / filename   # like hf_hub_download(local_dir=...): keeps repo subfolders
         dst.parent.mkdir(parents=True, exist_ok=True)
         dst.write_bytes(self.files[filename])
         return str(dst)

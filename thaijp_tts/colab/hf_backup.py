@@ -9,6 +9,7 @@ stop training: ``push`` swallows errors and reports them.
 from __future__ import annotations
 
 import os
+import shutil
 import time
 from collections.abc import Callable
 from pathlib import Path
@@ -122,7 +123,10 @@ class HfBackup:
             if name == "DONE":
                 continue
             dest = self.models_dir if name.endswith(".pth") else self.assets_dir
-            self.download(repo_id=self.repo_id, filename=f, local_dir=str(dest))
+            got = Path(self.download(repo_id=self.repo_id, filename=f, local_dir=str(dest)))
+            target = dest / name
+            if got != target:   # hf_hub_download(local_dir=...) keeps repo subfolders (ckpt/<step>/..) → flatten
+                shutil.move(str(got), str(target))
         print(f"☁️ กู้ checkpoint step {step} จาก {self.repo_id}", flush=True)
         return step
 
